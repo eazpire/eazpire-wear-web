@@ -179,6 +179,73 @@
     }
   }
 
+  function getCurrentPreviewMeta() {
+    var item = findSelectedProduct();
+    if (!item) return null;
+    var fallback = artifactFallbackImage();
+    var variant = findSelectedVariant();
+    var src = variantImage(item, variant, fallback);
+    if (!src) return null;
+    var title = productTitle(item);
+    var variantLabel = variant && (variant.label || variant.color) ? String(variant.label || variant.color) : "";
+    return {
+      src: src,
+      alt: title + (variantLabel ? " — " + variantLabel : ""),
+      caption: title + (variantLabel ? " · " + variantLabel : ""),
+    };
+  }
+
+  function isLightboxOpen() {
+    var lb = qs("feedProductLightbox");
+    return !!(lb && lb.classList.contains("open"));
+  }
+
+  function updateLightboxNav() {
+    var prev = qs("feedProductLightboxPrev");
+    var next = qs("feedProductLightboxNext");
+    var item = findSelectedProduct();
+    var variants = item ? getProductVariants(item) : [];
+    var count = variants.length;
+    var idx = modalState.selectedVariantIndex;
+    var show = count > 1;
+    if (prev) prev.hidden = !show;
+    if (next) next.hidden = !show;
+    if (prev) prev.disabled = idx <= 0;
+    if (next) next.disabled = idx >= count - 1;
+  }
+
+  function syncLightboxContent() {
+    if (!isLightboxOpen()) return;
+    var meta = getCurrentPreviewMeta();
+    var img = qs("feedProductLightboxImg");
+    var caption = qs("feedProductLightboxCaption");
+    if (!meta || !img) {
+      closeLightbox();
+      return;
+    }
+    img.src = meta.src;
+    img.alt = meta.alt;
+    if (caption) caption.textContent = meta.caption;
+    updateLightboxNav();
+  }
+
+  function openLightbox() {
+    var meta = getCurrentPreviewMeta();
+    if (!meta) return;
+    var lb = qs("feedProductLightbox");
+    if (!lb) return;
+    lb.classList.add("open");
+    lb.setAttribute("aria-hidden", "false");
+    syncLightboxContent();
+  }
+
+  function closeLightbox() {
+    var lb = qs("feedProductLightbox");
+    if (!lb) return;
+    lb.classList.remove("open");
+    lb.setAttribute("aria-hidden", "true");
+  }
+
   function renderMainPreview() {
     var mainEl = qs("feedProductModalMain");
     var titleEl = qs("feedProductModalTitle");
@@ -195,11 +262,13 @@
 
     if (src) {
       mainEl.innerHTML =
+        '<button type="button" class="feed-product-modal__zoom" data-feed-product-zoom aria-label="View larger preview">' +
         '<img src="' +
         escapeHtml(src) +
         '" alt="' +
         escapeHtml(title + (variantLabel ? " — " + variantLabel : "")) +
-        '" loading="lazy">';
+        '" loading="lazy">' +
+        "</button>";
     } else {
       mainEl.innerHTML =
         '<div class="feed-product-modal-main-fallback"><span aria-hidden="true">👕</span><p>' +
@@ -209,6 +278,7 @@
     }
     if (titleEl) titleEl.textContent = title;
     updateNavButtons();
+    syncLightboxContent();
   }
 
   function renderCarousel() {
@@ -438,6 +508,7 @@
   }
 
   function close() {
+    closeLightbox();
     closeModalShell();
     modalState.post = null;
     modalState.products = [];
@@ -478,6 +549,48 @@
     );
   }
 
+  function bindLightbox() {
+    var lb = qs("feedProductLightbox");
+    if (!lb || lb.dataset.bound) return;
+    lb.dataset.bound = "1";
+
+    lb.querySelectorAll("[data-feed-lightbox-close]").forEach(function (el) {
+      el.addEventListener("click", closeLightbox);
+    });
+
+    var prev = qs("feedProductLightboxPrev");
+    var next = qs("feedProductLightboxNext");
+    if (prev) prev.addEventListener("click", function () { navigateVariant(-1); });
+    if (next) next.addEventListener("click", function () { navigateVariant(1); });
+
+    var stage = lb.querySelector(".feed-product-lightbox__stage");
+    if (stage) {
+      stage.addEventListener(
+        "touchstart",
+        function (e) {
+          if (!e.touches || !e.touches.length) return;
+          swipeState.tracking = true;
+          swipeState.startX = e.touches[0].clientX;
+          swipeState.startY = e.touches[0].clientY;
+        },
+        { passive: true }
+      );
+      stage.addEventListener(
+        "touchend",
+        function (e) {
+          if (!swipeState.tracking || !e.changedTouches || !e.changedTouches.length) return;
+          swipeState.tracking = false;
+          var dx = e.changedTouches[0].clientX - swipeState.startX;
+          var dy = e.changedTouches[0].clientY - swipeState.startY;
+          if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
+          if (dx < 0) navigateVariant(1);
+          else navigateVariant(-1);
+        },
+        { passive: true }
+      );
+    }
+  }
+
   function bind() {
     var modal = qs("feedProductModal");
     if (!modal || modal.dataset.bound) return;
@@ -502,13 +615,26 @@
     }
 
     bindMainSwipe();
+    bindLightbox();
+
+    var mainEl = qs("feedProductModalMain");
+    if (mainEl) {
+      mainEl.addEventListener("click", function (e) {
+        if (e.target.closest("[data-feed-product-zoom]")) openLightbox();
+      });
+    }
 
     document.addEventListener("keydown", function (e) {
-      if (!modal.classList.contains("open")) return;
+      if (!modal.classList.contains("open") && !isLightboxOpen()) return;
       if (e.key === "Escape") {
+        if (isLightboxOpen()) {
+          closeLightbox();
+          return;
+        }
         close();
         return;
       }
+      if (!modal.classList.contains("open")) return;
       if (e.key === "ArrowLeft") {
         e.preventDefault();
         navigateVariant(-1);
