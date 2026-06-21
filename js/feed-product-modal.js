@@ -11,6 +11,8 @@
     selectedKey: null,
     selectedIndex: 0,
     selectedVariantIndex: 0,
+    selectedViewIndex: 0,
+    selectedViewKey: null,
     refCode: null,
   };
 
@@ -96,8 +98,118 @@
         shopify_variant_id: null,
         printify_variant_id: null,
         option_values: [],
+        view_images: [{ key: "front", label: "Front", image_url: img }],
       },
     ];
+  }
+
+  function colorNamesMatch(a, b) {
+    return String(a || "").trim().toLowerCase() === String(b || "").trim().toLowerCase();
+  }
+
+  function draftMockupEntryForColor(colors, colorName) {
+    if (!colors || !colorName) return null;
+    if (colors[colorName] && colors[colorName].image_url) return colors[colorName];
+    var keys = Object.keys(colors || {});
+    for (var i = 0; i < keys.length; i++) {
+      if (colorNamesMatch(keys[i], colorName) && colors[keys[i]].image_url) return colors[keys[i]];
+    }
+    return null;
+  }
+
+  function buildViewsFromDraftMockupsClient(draftMockups, colorName) {
+    var byView = draftMockups || {};
+    var viewOrder = { front: 10, back: 20, "back-2": 20, right: 35, left: 36, lifestyle: 40 };
+    var viewKeys = Object.keys(byView).sort(function (a, b) {
+      var sa = viewOrder[String(a).toLowerCase()] || 50;
+      var sb = viewOrder[String(b).toLowerCase()] || 50;
+      return sa - sb;
+    });
+    var views = [];
+    for (var i = 0; i < viewKeys.length; i++) {
+      var viewKey = viewKeys[i];
+      var entry = draftMockupEntryForColor(byView[viewKey], colorName);
+      if (!entry || !entry.image_url) continue;
+      var label = viewKey.charAt(0).toUpperCase() + viewKey.slice(1).replace(/-/g, " ");
+      if (String(viewKey).toLowerCase() === "back-2") label = "Back";
+      views.push({
+        key: String(viewKey).trim().toLowerCase(),
+        label: label,
+        image_url: entry.image_url,
+      });
+      if (views.length >= 4) break;
+    }
+    return views;
+  }
+
+  function getVariantViews(variant, item) {
+    if (variant && Array.isArray(variant.view_images) && variant.view_images.length) {
+      return variant.view_images.slice(0, 4);
+    }
+    if (item && item.draft_mockups && variant && (variant.color || variant.label)) {
+      var fromDraft = buildViewsFromDraftMockupsClient(item.draft_mockups, variant.color || variant.label);
+      if (fromDraft.length) return fromDraft;
+    }
+    var fallback = artifactFallbackImage();
+    var img = variantImage(item, variant, fallback);
+    if (img) return [{ key: "front", label: "Front", image_url: img }];
+    return [];
+  }
+
+  function resolveViewIndex(views, preferredKey) {
+    if (!views || !views.length) return 0;
+    if (preferredKey) {
+      for (var i = 0; i < views.length; i++) {
+        if (views[i].key === preferredKey) return i;
+      }
+    }
+    return 0;
+  }
+
+  function applyViewIndexForVariant(preferredViewKey) {
+    var views = getVariantViews(findSelectedVariant(), findSelectedProduct());
+    var key = preferredViewKey != null ? preferredViewKey : modalState.selectedViewKey;
+    modalState.selectedViewIndex = resolveViewIndex(views, key);
+    var active = views[modalState.selectedViewIndex];
+    modalState.selectedViewKey = active ? active.key : null;
+  }
+
+  function getActiveViewImage(variant, item) {
+    var views = getVariantViews(variant, item);
+    var idx = modalState.selectedViewIndex;
+    if (views[idx] && views[idx].image_url) return views[idx].image_url;
+    if (views[0] && views[0].image_url) return views[0].image_url;
+    return variantImage(item, variant, artifactFallbackImage());
+  }
+
+  function renderViewThumbsHtml(views, selectedIndex, thumbClass) {
+    if (!views || views.length <= 1) return "";
+    return views
+      .slice(0, 4)
+      .map(function (v, i) {
+        var active = i === selectedIndex ? " is-active" : "";
+        return (
+          '<button type="button" class="' +
+          thumbClass +
+          active +
+          '" data-view-index="' +
+          i +
+          '" aria-label="' +
+          escapeHtml(v.label || "View") +
+          '"><img src="' +
+          escapeHtml(v.image_url) +
+          '" alt="" loading="lazy"></button>'
+        );
+      })
+      .join("");
+  }
+
+  function selectView(index) {
+    var views = getVariantViews(findSelectedVariant(), findSelectedProduct());
+    if (index < 0 || index >= views.length) return;
+    modalState.selectedViewIndex = index;
+    modalState.selectedViewKey = views[index].key;
+    renderMainPreview();
   }
 
   function findSelectedProduct() {
@@ -182,16 +294,22 @@
   function getCurrentPreviewMeta() {
     var item = findSelectedProduct();
     if (!item) return null;
-    var fallback = artifactFallbackImage();
     var variant = findSelectedVariant();
-    var src = variantImage(item, variant, fallback);
+    var src = getActiveViewImage(variant, item);
     if (!src) return null;
     var title = productTitle(item);
     var variantLabel = variant && (variant.label || variant.color) ? String(variant.label || variant.color) : "";
+    var views = getVariantViews(variant, item);
+    var view = views[modalState.selectedViewIndex];
+    var viewLabel = view && view.label ? String(view.label) : "";
+    var caption = title + (variantLabel ? " · " + variantLabel : "");
+    if (viewLabel) caption += " · " + viewLabel;
     return {
       src: src,
-      alt: title + (variantLabel ? " — " + variantLabel : ""),
-      caption: title + (variantLabel ? " · " + variantLabel : ""),
+      alt: title + (variantLabel ? " — " + variantLabel : "") + (viewLabel ? " — " + viewLabel : ""),
+      caption: caption,
+      views: views,
+      selectedViewIndex: modalState.selectedViewIndex,
     };
   }
 
@@ -219,6 +337,7 @@
     var meta = getCurrentPreviewMeta();
     var img = qs("feedProductLightboxImg");
     var caption = qs("feedProductLightboxCaption");
+    var thumbs = qs("feedProductLightboxViewThumbs");
     if (!meta || !img) {
       closeLightbox();
       return;
@@ -226,6 +345,13 @@
     img.src = meta.src;
     img.alt = meta.alt;
     if (caption) caption.textContent = meta.caption;
+    if (thumbs) {
+      var multi = meta.views && meta.views.length > 1;
+      thumbs.hidden = !multi;
+      thumbs.innerHTML = multi
+        ? renderViewThumbsHtml(meta.views, meta.selectedViewIndex, "feed-product-lightbox__view-thumb")
+        : "";
+    }
     updateLightboxNav();
   }
 
@@ -254,21 +380,33 @@
     var item = findSelectedProduct();
     if (!item) return;
 
-    var fallback = artifactFallbackImage();
     var variant = findSelectedVariant();
-    var src = variantImage(item, variant, fallback);
+    var src = getActiveViewImage(variant, item);
     var title = productTitle(item);
     var variantLabel = variant && (variant.label || variant.color) ? String(variant.label || variant.color) : "";
+    var views = getVariantViews(variant, item);
+    var thumbsHtml = renderViewThumbsHtml(
+      views,
+      modalState.selectedViewIndex,
+      "feed-product-modal__view-thumb"
+    );
+    var multiViews = views.length > 1;
 
     if (src) {
       mainEl.innerHTML =
+        '<div class="feed-product-modal__preview-layout' +
+        (multiViews ? "" : " feed-product-modal__preview-layout--single") +
+        '">' +
+        (multiViews
+          ? '<div class="feed-product-modal__view-thumbs" id="feedProductModalViewThumbs">' + thumbsHtml + "</div>"
+          : "") +
         '<button type="button" class="feed-product-modal__zoom" data-feed-product-zoom aria-label="View larger preview">' +
         '<img src="' +
         escapeHtml(src) +
         '" alt="' +
         escapeHtml(title + (variantLabel ? " — " + variantLabel : "")) +
         '" loading="lazy">' +
-        "</button>";
+        "</button></div>";
     } else {
       mainEl.innerHTML =
         '<div class="feed-product-modal-main-fallback"><span aria-hidden="true">👕</span><p>' +
@@ -367,6 +505,7 @@
     modalState.selectedKey = key;
     modalState.selectedIndex = idx;
     modalState.selectedVariantIndex = resolveVariantIndexForProduct(item, keepColor);
+    applyViewIndexForVariant(null);
     renderMainPreview();
     renderCarousel();
     updateShopButton();
@@ -380,6 +519,7 @@
     var next = modalState.selectedVariantIndex + delta;
     if (next < 0 || next >= variants.length) return;
     modalState.selectedVariantIndex = next;
+    applyViewIndexForVariant(modalState.selectedViewKey);
     renderMainPreview();
     renderCarousel();
     updateShopButton();
@@ -452,6 +592,8 @@
     modalState.selectedKey = null;
     modalState.selectedIndex = 0;
     modalState.selectedVariantIndex = 0;
+    modalState.selectedViewIndex = 0;
+    modalState.selectedViewKey = null;
     modalState.refCode = null;
 
     var mainEl = qs("feedProductModalMain");
@@ -515,6 +657,8 @@
     modalState.selectedKey = null;
     modalState.selectedIndex = 0;
     modalState.selectedVariantIndex = 0;
+    modalState.selectedViewIndex = 0;
+    modalState.selectedViewKey = null;
     modalState.refCode = null;
   }
 
@@ -620,7 +764,24 @@
     var mainEl = qs("feedProductModalMain");
     if (mainEl) {
       mainEl.addEventListener("click", function (e) {
+        var viewThumb = e.target.closest("[data-view-index]");
+        if (viewThumb) {
+          e.stopPropagation();
+          selectView(Number(viewThumb.getAttribute("data-view-index")));
+          return;
+        }
         if (e.target.closest("[data-feed-product-zoom]")) openLightbox();
+      });
+    }
+
+    var lb = qs("feedProductLightbox");
+    if (lb) {
+      lb.addEventListener("click", function (e) {
+        var viewThumb = e.target.closest("[data-view-index]");
+        if (viewThumb) {
+          e.stopPropagation();
+          selectView(Number(viewThumb.getAttribute("data-view-index")));
+        }
       });
     }
 
