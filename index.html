@@ -7,7 +7,7 @@
   <title>Eazpire Wear</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/community.css?v=22">
+  <link rel="stylesheet" href="/css/community.css?v=23">
 </head>
 <body data-role="guest">
 
@@ -505,11 +505,16 @@
       <button type="button" class="feed-product-modal-nav feed-product-modal-nav--next" id="feedProductModalNext" aria-label="Next color" hidden>›</button>
     </div>
     <div class="feed-product-modal__grid-wrap">
-      <p class="feed-product-modal__grid-label">Same design on other products</p>
+      <p class="feed-product-modal__grid-label" id="feedProductModalGridLabel">Like this design? Discover more products with it.</p>
       <div class="feed-product-modal__grid" id="feedProductModalGrid"></div>
     </div>
     <div class="feed-product-modal__footer">
-      <a class="btn primary" id="feedProductModalShopBtn" href="#" target="_blank" rel="noopener noreferrer" hidden>View in Shop</a>
+      <div class="feed-product-modal__footer-actions">
+        <button type="button" class="btn ghost feed-product-modal__create-btn" id="feedProductModalCreateBtn" disabled title="Opens Creator with this design — coming soon" hidden>
+          Create your own <span class="feed-product-modal__soon-badge">Soon</span>
+        </button>
+        <a class="btn primary" id="feedProductModalShopBtn" href="#" target="_blank" rel="noopener noreferrer" hidden>View in Shop</a>
+      </div>
     </div>
   </div>
 </div>
@@ -522,7 +527,7 @@
 <script src="/js/move-to-earn.js?v=9"></script>
 <script src="/js/character-craft.js?v=9"></script>
 <script src="/js/feed-camera.js?v=3"></script>
-<script src="/js/feed-product-modal.js?v=4"></script>
+<script src="/js/feed-product-modal.js?v=5"></script>
 <script src="/js/feed.js?v=21"></script>
 <script src="/js/verify-hub.js?v=2"></script>
 <script src="/js/profile-modal.js?v=9"></script>

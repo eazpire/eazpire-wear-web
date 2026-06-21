@@ -16,6 +16,23 @@
 
   var swipeState = { startX: 0, startY: 0, tracking: false };
 
+  /** English source — future i18n via wear translation layer. */
+  var CAROUSEL_LABELS = [
+    "Like this design? Discover more products with it.",
+    "Love the look? See it on more products.",
+    "Same vibe, different products — explore more.",
+    "Like the design? Find it on other products.",
+  ];
+
+  function pickCarouselLabel() {
+    return CAROUSEL_LABELS[Math.floor(Math.random() * CAROUSEL_LABELS.length)];
+  }
+
+  function applyCarouselLabel() {
+    var el = qs("feedProductModalGridLabel");
+    if (el) el.textContent = pickCarouselLabel();
+  }
+
   function qs(id) {
     return document.getElementById(id);
   }
@@ -234,10 +251,19 @@
     var handle = item ? productHandle(item) : null;
     if (!handle) {
       shopBtn.hidden = true;
+      updateCreateButton();
       return;
     }
     shopBtn.href = buildShopViewUrl(handle, modalState.refCode, findSelectedVariant());
     shopBtn.hidden = false;
+    updateCreateButton();
+  }
+
+  function updateCreateButton() {
+    var createBtn = qs("feedProductModalCreateBtn");
+    if (!createBtn) return;
+    var show = modalState.products.length > 0 && !!findSelectedProduct();
+    createBtn.hidden = !show;
   }
 
   function resolveVariantIndexForProduct(item, preferredColor) {
@@ -350,6 +376,7 @@
     if (!post || !post.artifact) return;
 
     openModalShell();
+    applyCarouselLabel();
     modalState.post = post;
     modalState.products = [];
     modalState.selectedKey = null;
@@ -360,12 +387,14 @@
     var mainEl = qs("feedProductModalMain");
     var grid = qs("feedProductModalGrid");
     var shopBtn = qs("feedProductModalShopBtn");
+    var createBtn = qs("feedProductModalCreateBtn");
     if (mainEl) {
       mainEl.innerHTML =
         '<div class="feed-product-modal-loading"><span class="feed-viewer-loading-dot"></span><span>Loading products…</span></div>';
     }
     if (grid) grid.innerHTML = "";
     if (shopBtn) shopBtn.hidden = true;
+    if (createBtn) createBtn.hidden = true;
     updateNavButtons();
 
     try {
