@@ -5,7 +5,7 @@
   "use strict";
 
   var titles = {
-    home: "Eazpire Wear",
+    home: "Game Hub",
     feed: "Live Artifact Feed",
     verify: "Verification Arena",
     community: "Your Squad",
@@ -275,6 +275,7 @@
     else await global.CommunityAuth.refreshSession();
     await refreshData();
     go("home");
+    if (global.__wearBootLoaderDone) global.__wearBootLoaderDone();
   }
 
   global.CommunityApp = {

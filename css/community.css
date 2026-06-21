@@ -40,6 +40,60 @@
         repeating-linear-gradient(0deg,rgba(255,255,255,.026) 0px,rgba(255,255,255,.026) 1px,transparent 1px,transparent 4px);
       opacity:.42;
     }
+    body.is-boot-loading{overflow:hidden}
+    .wear-boot-loader{
+      position:fixed;inset:0;z-index:500;display:grid;place-items:center;
+      background:
+        radial-gradient(circle at 50% 28%,rgba(255,122,26,.16),transparent 32%),
+        linear-gradient(180deg,#030407,#0a0c14 55%,#07080d);
+      transition:opacity .45s ease,visibility .45s ease;
+    }
+    .wear-boot-loader.is-done{opacity:0;visibility:hidden;pointer-events:none}
+    .wear-boot-loader__card{
+      width:min(640px,92vw);text-align:center;padding:12px 16px 8px;
+    }
+    .wear-boot-loader__logo{
+      width:min(520px,88vw);height:auto;display:block;margin:0 auto;
+      animation:wearBootLogoGlow 2.2s ease-in-out infinite;
+    }
+    @keyframes wearBootLogoGlow{
+      0%,100%{filter:drop-shadow(0 0 16px rgba(255,122,26,.22));transform:scale(1)}
+      50%{filter:drop-shadow(0 0 28px rgba(255,122,26,.42));transform:scale(1.012)}
+    }
+    .wear-boot-loader__bar-wrap{
+      width:min(420px,78vw);margin:14px auto 0;padding:6px 8px;border-radius:999px;
+      border:1px solid rgba(255,122,26,.28);background:rgba(255,255,255,.04);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.04),0 8px 28px rgba(0,0,0,.35);
+    }
+    .wear-boot-loader__bar{display:flex;gap:4px;align-items:stretch;height:11px}
+    .wear-boot-loader__seg{
+      flex:1;border-radius:999px;background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.07);overflow:hidden;position:relative;
+    }
+    .wear-boot-loader__seg-fill{
+      position:absolute;inset:0;border-radius:inherit;
+      background:linear-gradient(90deg,var(--orange),var(--orange2),var(--cyan));
+      transform:scaleX(0);transform-origin:left center;
+      transition:transform .28s cubic-bezier(.22,1,.36,1);
+    }
+    .wear-boot-loader__seg:nth-child(3n+2) .wear-boot-loader__seg-fill{
+      background:linear-gradient(90deg,var(--orange2),var(--cyan));
+    }
+    .wear-boot-loader__seg:nth-child(3n) .wear-boot-loader__seg-fill{
+      background:linear-gradient(90deg,var(--cyan),var(--purple));
+    }
+    .wear-boot-loader__seg.is-lit .wear-boot-loader__seg-fill{transform:scaleX(1)}
+    .wear-boot-loader__seg.is-active .wear-boot-loader__seg-fill{
+      animation:wearBootSegPulse 1s ease-in-out infinite;
+    }
+    @keyframes wearBootSegPulse{
+      0%,100%{opacity:1}
+      50%{opacity:.72}
+    }
+    .wear-boot-loader__status{
+      margin:12px 0 0;color:var(--soft);font-size:11px;font-weight:800;
+      letter-spacing:.14em;text-transform:uppercase;
+    }
     button,input,select,textarea{font-family:inherit}
     button{cursor:pointer}
     a{color:inherit;text-decoration:none}
@@ -57,16 +111,15 @@
       display:flex;flex-direction:column;align-items:center;gap:16px;z-index:20;
     }
     .mark{
-      width:58px;height:58px;border-radius:22px;flex-shrink:0;border:none;padding:0;
-      background:
-        radial-gradient(circle at 30% 22%,#fff,transparent 12%),
-        linear-gradient(135deg,var(--orange),var(--red));
-      box-shadow:0 18px 50px rgba(255,122,26,.28),inset 0 0 0 1px rgba(255,255,255,.22);
-      position:relative;
+      width:58px;height:58px;border-radius:22px;flex-shrink:0;border:none;padding:4px;
+      background:rgba(255,255,255,.04);
+      box-shadow:0 12px 32px rgba(255,122,26,.18),inset 0 0 0 1px rgba(255,255,255,.12);
+      position:relative;overflow:hidden;
     }
-    .mark::after{
-      content:"";position:absolute;inset:16px;
-      border:2px solid rgba(6,7,12,.7);border-radius:10px;transform:rotate(9deg);
+    .mark::after{display:none}
+    .mark img{
+      width:100%;height:100%;object-fit:contain;object-position:center;display:block;
+      filter:drop-shadow(0 0 10px rgba(255,122,26,.22));
     }
     .rail-nav{display:flex;flex-direction:column;gap:10px;margin-top:8px}
     .rail-btn{
@@ -91,6 +144,10 @@
       padding:10px 0 18px;backdrop-filter:blur(10px);
     }
     .title-block{min-width:0}
+    .wear-brand-logo{
+      display:none;width:min(200px,56vw);height:auto;margin:0 0 4px;
+      filter:drop-shadow(0 0 14px rgba(255,122,26,.2));
+    }
     .title-block .kicker{
       color:var(--orange2);font-size:11px;font-weight:950;
       letter-spacing:.16em;text-transform:uppercase;
@@ -473,6 +530,7 @@
       .main{padding:12px 12px 96px}
       .bottom-nav{display:grid}
       .top-hud{min-height:66px;padding:6px 0 12px;align-items:flex-start;flex-wrap:wrap}
+      .wear-brand-logo{display:block}
       .title-block h1{font-size:19px}
       .title-block .kicker{font-size:9px}
       .hud-actions{gap:6px}

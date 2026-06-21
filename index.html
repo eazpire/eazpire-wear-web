@@ -7,13 +7,25 @@
   <title>Eazpire Wear</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/community.css?v=26">
+  <link rel="stylesheet" href="/css/community.css?v=27">
 </head>
-<body data-role="guest">
+<body class="is-boot-loading" data-role="guest">
+
+<div class="wear-boot-loader" id="wearBootLoader" role="status" aria-live="polite" aria-label="Loading Eazpire Wear">
+  <div class="wear-boot-loader__card">
+    <img class="wear-boot-loader__logo" src="/assets/eazpire-wear-logo.png" alt="" width="640" height="180" decoding="async">
+    <div class="wear-boot-loader__bar-wrap">
+      <div class="wear-boot-loader__bar" id="wearBootLoaderBar" aria-hidden="true"></div>
+    </div>
+    <p class="wear-boot-loader__status" id="wearBootLoaderStatus">Loading Wear Hub</p>
+  </div>
+</div>
 
 <div class="app-shell">
   <aside class="side-rail" aria-label="Navigation">
-    <button type="button" class="mark" data-go="home" aria-label="Eazpire home"></button>
+    <button type="button" class="mark" data-go="home" aria-label="Eazpire home">
+      <img src="/assets/eazpire-wear-logo.png" alt="" width="58" height="58" decoding="async">
+    </button>
     <nav class="rail-nav">
       <button type="button" class="rail-btn active" data-go="home"><span class="ico">🎮</span>Hub</button>
       <button type="button" class="rail-btn" data-go="feed"><span class="ico">🔥</span>Feed</button>
@@ -30,6 +42,7 @@
   <main class="main">
     <header class="top-hud">
       <div class="title-block">
+        <img class="wear-brand-logo" src="/assets/eazpire-wear-logo.png" alt="Eazpire" width="320" height="90" decoding="async">
         <div class="kicker">wear.eazpire.com · Wear · Move · Earn</div>
         <h1 id="screenTitle">Eazpire Game Hub</h1>
       </div>
@@ -371,7 +384,6 @@
     <div class="community-login-glow" aria-hidden="true"></div>
     <div class="community-login-head">
       <div>
-        <div class="kicker">Eazpire Wear</div>
         <h2 id="communityLoginTitle">Sign in to play</h2>
       </div>
       <button type="button" class="community-login-close" id="communityLoginClose" aria-label="Close">✕</button>
@@ -547,6 +559,7 @@
 <script src="/js/feed.js?v=21"></script>
 <script src="/js/verify-hub.js?v=2"></script>
 <script src="/js/profile-modal.js?v=9"></script>
-<script src="/js/app.js?v=11"></script>
+<script src="/js/wear-boot-loader.js?v=1"></script>
+<script src="/js/app.js?v=12"></script>
 </body>
 </html>
