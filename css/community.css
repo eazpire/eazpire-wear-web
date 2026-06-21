@@ -117,13 +117,14 @@
     }
     .mark::after{display:none}
     .mark img{
-      width:78px;height:auto;object-fit:contain;object-position:center;display:block;
+      width:min(78px,100%);height:auto;object-fit:contain;object-position:center;display:block;
       filter:drop-shadow(0 0 12px rgba(255,122,26,.28));
-      animation:wearMarkGlow 2.4s ease-in-out infinite;
+      animation:wearMarkPulse 2.4s ease-in-out infinite;
+      transform-origin:center center;
     }
-    @keyframes wearMarkGlow{
-      0%,100%{filter:drop-shadow(0 0 8px rgba(255,122,26,.22));opacity:.94}
-      50%{filter:drop-shadow(0 0 18px rgba(255,122,26,.48));opacity:1}
+    @keyframes wearMarkPulse{
+      0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(255,122,26,.22));opacity:.94}
+      50%{transform:scale(1.05);filter:drop-shadow(0 0 18px rgba(255,122,26,.48));opacity:1}
     }
     .rail-nav{display:flex;flex-direction:column;gap:10px;margin-top:8px}
     .rail-btn{
