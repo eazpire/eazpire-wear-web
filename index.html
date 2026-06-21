@@ -7,7 +7,7 @@
   <title>Eazpire Wear</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/community.css?v=31">
+  <link rel="stylesheet" href="/css/community.css?v=33">
 </head>
 <body class="is-boot-loading" data-role="guest">
 
@@ -42,9 +42,29 @@
   <main class="main">
     <header class="top-hud">
       <div class="title-block">
-        <img class="wear-brand-logo wear-hub-logo" src="/assets/eaz-app-favicon.png?v=5" alt="Eazpire" width="64" height="64" decoding="async">
+        <img class="wear-brand-logo" src="/assets/eazpire-wear-logo.png?v=6" alt="Eazpire" width="320" height="112" decoding="async">
         <div class="kicker">wear.eazpire.com · Wear · Move · Earn</div>
         <h1 id="screenTitle">Eazpire Game Hub</h1>
+      </div>
+      <div class="hud-actions wear-android-download-wrap">
+        <a
+          class="wear-android-download"
+          id="wearAndroidDownload"
+          href="https://play.google.com/store/apps/details?id=com.eazpire.wear"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Download Eazpire Wear for Android"
+        >
+          <span class="wear-android-download__logo-wrap">
+            <img class="wear-android-download__app-logo" src="/assets/eaz-app-favicon.png?v=1" alt="" width="36" height="36" decoding="async">
+            <span class="wear-android-download__android-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                <path fill="#3DDC84" d="M17.6 9.48l1.84-3.18c.16-.28.06-.64-.22-.8-.28-.16-.64-.06-.8.22l-1.88 3.24a11.463 11.463 0 0 0-8.72 0L5.98 5.72a.582.582 0 0 0-.8-.22c-.28.16-.38.52-.22.8l1.84 3.18C4.26 11.03 2.5 14.03 2.5 17.25h19c0-3.22-1.76-6.22-3.9-7.77zM6.75 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10.5 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/>
+              </svg>
+            </span>
+          </span>
+          <span class="wear-android-download__label">Download Now</span>
+        </a>
       </div>
       <div class="hud-actions owner-only">
         <div class="wallet activity"><span>Activity EAZ</span><strong id="energyVal">— EAZ</strong></div>
@@ -559,6 +579,7 @@
 <script src="/js/feed.js?v=21"></script>
 <script src="/js/verify-hub.js?v=2"></script>
 <script src="/js/profile-modal.js?v=9"></script>
+<script src="/js/wear-android-download.js?v=1"></script>
 <script src="/js/wear-boot-loader.js?v=1"></script>
 <script src="/js/app.js?v=12"></script>
 </body>
