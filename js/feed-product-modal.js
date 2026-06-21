@@ -1,5 +1,6 @@
 /**
  * Feed product preview modal — same-design shop products + ref link to shop PDP.
+ * Main preview arrows/swipe cycle color variants of the selected carousel product.
  */
 (function (global) {
   "use strict";
@@ -9,6 +10,7 @@
     products: [],
     selectedKey: null,
     selectedIndex: 0,
+    selectedVariantIndex: 0,
     refCode: null,
   };
 
@@ -56,22 +58,29 @@
     return item.product_name || item.title || "Product";
   }
 
-  function isMobileUa() {
-    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+  function artifactFallbackImage() {
+    return modalState.post && modalState.post.artifact ? modalState.post.artifact.image_url : "";
   }
 
-  function buildShopViewUrl(handle, refCode) {
-    var h = encodeURIComponent(handle);
-    if (isMobileUa()) {
-      return (
-        "https://www.eazpire.com/products/" +
-        h +
-        (refCode ? "?ref=" + encodeURIComponent(refCode) : "")
-      );
+  function getProductVariants(item) {
+    if (!item) return [];
+    if (Array.isArray(item.color_variants) && item.color_variants.length) {
+      return item.color_variants;
     }
-    var url = "https://www.eazpire.com/?eaz_open_pdp=" + h;
-    if (refCode) url += "&ref=" + encodeURIComponent(refCode);
-    return url;
+    var fallback = artifactFallbackImage();
+    var img = productImage(item, fallback);
+    if (!img) return [];
+    return [
+      {
+        key: "default",
+        label: "",
+        color: "",
+        preview_image: img,
+        shopify_variant_id: null,
+        printify_variant_id: null,
+        option_values: [],
+      },
+    ];
   }
 
   function findSelectedProduct() {
@@ -88,11 +97,55 @@
     return idx >= 0 ? idx : modalState.selectedIndex;
   }
 
+  function findSelectedVariant() {
+    var item = findSelectedProduct();
+    if (!item) return null;
+    var variants = getProductVariants(item);
+    if (!variants.length) return null;
+    var idx = modalState.selectedVariantIndex;
+    if (idx < 0 || idx >= variants.length) idx = 0;
+    return variants[idx] || variants[0];
+  }
+
+  function variantImage(item, variant, fallback) {
+    if (variant && variant.preview_image) return variant.preview_image;
+    return productImage(item, fallback);
+  }
+
+  function isMobileUa() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent || "");
+  }
+
+  function buildShopViewUrl(handle, refCode, variant) {
+    var h = encodeURIComponent(handle);
+    var params = [];
+    if (refCode) params.push("ref=" + encodeURIComponent(refCode));
+    if (variant) {
+      if (variant.shopify_variant_id != null && variant.shopify_variant_id !== "") {
+        params.push("variant=" + encodeURIComponent(String(variant.shopify_variant_id)));
+        params.push("eaz_variant_id=" + encodeURIComponent(String(variant.shopify_variant_id)));
+      }
+      if (variant.color) {
+        params.push("eaz_variant_color=" + encodeURIComponent(String(variant.color)));
+      }
+    }
+    var qs = params.length ? "?" + params.join("&") : "";
+
+    if (isMobileUa()) {
+      return "https://www.eazpire.com/products/" + h + qs;
+    }
+    var url = "https://www.eazpire.com/?eaz_open_pdp=" + h;
+    if (params.length) url += "&" + params.join("&");
+    return url;
+  }
+
   function updateNavButtons() {
     var prev = qs("feedProductModalPrev");
     var next = qs("feedProductModalNext");
-    var count = modalState.products.length;
-    var idx = findSelectedIndex();
+    var item = findSelectedProduct();
+    var variants = item ? getProductVariants(item) : [];
+    var count = variants.length;
+    var idx = modalState.selectedVariantIndex;
     var show = count > 1;
     if (prev) prev.hidden = !show;
     if (next) next.hidden = !show;
@@ -109,20 +162,32 @@
     }
   }
 
-  function renderMainImage(item, fallbackImg) {
+  function renderMainPreview() {
     var mainEl = qs("feedProductModalMain");
     var titleEl = qs("feedProductModalTitle");
     if (!mainEl) return;
 
-    var src = productImage(item, fallbackImg);
+    var item = findSelectedProduct();
+    if (!item) return;
+
+    var fallback = artifactFallbackImage();
+    var variant = findSelectedVariant();
+    var src = variantImage(item, variant, fallback);
     var title = productTitle(item);
+    var variantLabel = variant && (variant.label || variant.color) ? String(variant.label || variant.color) : "";
+
     if (src) {
       mainEl.innerHTML =
-        '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(title) + '" loading="lazy">';
+        '<img src="' +
+        escapeHtml(src) +
+        '" alt="' +
+        escapeHtml(title + (variantLabel ? " — " + variantLabel : "")) +
+        '" loading="lazy">';
     } else {
       mainEl.innerHTML =
         '<div class="feed-product-modal-main-fallback"><span aria-hidden="true">👕</span><p>' +
         escapeHtml(title) +
+        (variantLabel ? '<span class="feed-product-modal-muted">' + escapeHtml(variantLabel) + "</span>" : "") +
         "</p></div>";
     }
     if (titleEl) titleEl.textContent = title;
@@ -133,14 +198,15 @@
     var grid = qs("feedProductModalGrid");
     if (!grid) return;
 
-    var fallback =
-      modalState.post && modalState.post.artifact ? modalState.post.artifact.image_url : "";
+    var fallback = artifactFallbackImage();
 
     grid.innerHTML = modalState.products
       .map(function (item) {
         var key = productKey(item);
         var active = key === modalState.selectedKey ? " is-active" : "";
-        var src = productImage(item, fallback);
+        var variants = getProductVariants(item);
+        var thumbVariant = key === modalState.selectedKey && variants.length ? variants[modalState.selectedVariantIndex] || variants[0] : variants[0];
+        var src = variantImage(item, thumbVariant, fallback);
         var thumb = src
           ? '<img src="' + escapeHtml(src) + '" alt="" loading="lazy">'
           : '<span class="feed-product-modal-grid-fallback" aria-hidden="true">👕</span>';
@@ -170,32 +236,57 @@
       shopBtn.hidden = true;
       return;
     }
-    shopBtn.href = buildShopViewUrl(handle, modalState.refCode);
+    shopBtn.href = buildShopViewUrl(handle, modalState.refCode, findSelectedVariant());
     shopBtn.hidden = false;
   }
 
-  function selectProduct(key) {
+  function resolveVariantIndexForProduct(item, preferredColor) {
+    var variants = getProductVariants(item);
+    if (!variants.length) return 0;
+    if (!preferredColor) return 0;
+    var needle = String(preferredColor).trim().toLowerCase();
+    for (var i = 0; i < variants.length; i++) {
+      var v = variants[i];
+      var label = String(v.label || v.color || "").trim().toLowerCase();
+      if (label && label === needle) return i;
+    }
+    return 0;
+  }
+
+  function selectProduct(key, preferredColor) {
     var idx = modalState.products.findIndex(function (p) {
       return productKey(p) === key;
     });
     var item = idx >= 0 ? modalState.products[idx] : null;
     if (!item) return;
+
+    var keepColor = preferredColor;
+    if (keepColor == null) {
+      var prevVariant = findSelectedVariant();
+      if (prevVariant && (prevVariant.color || prevVariant.label)) {
+        keepColor = prevVariant.color || prevVariant.label;
+      }
+    }
+
     modalState.selectedKey = key;
     modalState.selectedIndex = idx;
-    var fallback =
-      modalState.post && modalState.post.artifact ? modalState.post.artifact.image_url : "";
-    renderMainImage(item, fallback);
+    modalState.selectedVariantIndex = resolveVariantIndexForProduct(item, keepColor);
+    renderMainPreview();
     renderCarousel();
     updateShopButton();
   }
 
-  function navigateProduct(delta) {
-    if (!modalState.products.length) return;
-    var idx = findSelectedIndex();
-    if (idx < 0) idx = 0;
-    var next = idx + delta;
-    if (next < 0 || next >= modalState.products.length) return;
-    selectProduct(productKey(modalState.products[next]));
+  function navigateVariant(delta) {
+    var item = findSelectedProduct();
+    if (!item) return;
+    var variants = getProductVariants(item);
+    if (variants.length <= 1) return;
+    var next = modalState.selectedVariantIndex + delta;
+    if (next < 0 || next >= variants.length) return;
+    modalState.selectedVariantIndex = next;
+    renderMainPreview();
+    renderCarousel();
+    updateShopButton();
   }
 
   async function loadProducts(post) {
@@ -219,6 +310,19 @@
           shopify_handle: handle,
           product_name: art.title || "Product",
           printify: { preview_image: fallbackImg || null },
+          color_variants: fallbackImg
+            ? [
+                {
+                  key: "default",
+                  label: "",
+                  color: "",
+                  preview_image: fallbackImg,
+                  shopify_variant_id: null,
+                  printify_variant_id: null,
+                  option_values: [],
+                },
+              ]
+            : [],
         },
       ];
     }
@@ -250,6 +354,7 @@
     modalState.products = [];
     modalState.selectedKey = null;
     modalState.selectedIndex = 0;
+    modalState.selectedVariantIndex = 0;
     modalState.refCode = null;
 
     var mainEl = qs("feedProductModalMain");
@@ -293,7 +398,7 @@
         if (match) preferred = match;
       }
 
-      selectProduct(productKey(preferred));
+      selectProduct(productKey(preferred), null);
     } catch (e) {
       if (mainEl) {
         mainEl.innerHTML =
@@ -309,6 +414,7 @@
     modalState.products = [];
     modalState.selectedKey = null;
     modalState.selectedIndex = 0;
+    modalState.selectedVariantIndex = 0;
     modalState.refCode = null;
   }
 
@@ -336,8 +442,8 @@
         var dx = e.changedTouches[0].clientX - swipeState.startX;
         var dy = e.changedTouches[0].clientY - swipeState.startY;
         if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)) return;
-        if (dx < 0) navigateProduct(1);
-        else navigateProduct(-1);
+        if (dx < 0) navigateVariant(1);
+        else navigateVariant(-1);
       },
       { passive: true }
     );
@@ -354,8 +460,8 @@
 
     var prevBtn = qs("feedProductModalPrev");
     var nextBtn = qs("feedProductModalNext");
-    if (prevBtn) prevBtn.addEventListener("click", function () { navigateProduct(-1); });
-    if (nextBtn) nextBtn.addEventListener("click", function () { navigateProduct(1); });
+    if (prevBtn) prevBtn.addEventListener("click", function () { navigateVariant(-1); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { navigateVariant(1); });
 
     var grid = qs("feedProductModalGrid");
     if (grid) {
@@ -376,11 +482,11 @@
       }
       if (e.key === "ArrowLeft") {
         e.preventDefault();
-        navigateProduct(-1);
+        navigateVariant(-1);
       }
       if (e.key === "ArrowRight") {
         e.preventDefault();
-        navigateProduct(1);
+        navigateVariant(1);
       }
     });
   }
