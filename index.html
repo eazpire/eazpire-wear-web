@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="icon" href="data:,">
+  <title>Eazpire Wear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/community.css?v=21">
+</head>
+<body data-role="guest">
+
+<div class="app-shell">
+  <aside class="side-rail" aria-label="Navigation">
+    <button type="button" class="mark" data-go="home" aria-label="Eazpire home"></button>
+    <nav class="rail-nav">
+      <button type="button" class="rail-btn active" data-go="home"><span class="ico">🎮</span>Hub</button>
+      <button type="button" class="rail-btn" data-go="feed"><span class="ico">🔥</span>Feed</button>
+      <button type="button" class="rail-btn" data-go="verify"><span class="ico">✓</span>Verify</button>
+      <button type="button" class="rail-btn" data-go="community"><span class="ico">🤝</span>Squad</button>
+      <button type="button" class="rail-btn" data-go="vault"><span class="ico">💎</span>Vault</button>
+      <button type="button" class="rail-btn" data-go="move"><span class="ico">👟</span>Move</button>
+    </nav>
+    <div class="rail-bottom">
+      <button type="button" class="rail-btn" data-profile aria-label="Player profile"><span class="ico">👤</span>Me</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top-hud">
+      <div class="title-block">
+        <div class="kicker">wear.eazpire.com · Wear · Move · Earn</div>
+        <h1 id="screenTitle">Eazpire Game Hub</h1>
+      </div>
+      <div class="hud-actions owner-only">
+        <div class="wallet activity"><span>Activity EAZ</span><strong id="energyVal">— EAZ</strong></div>
+      </div>
+      <div class="hud-actions guest-only">
+        <button type="button" class="btn primary sm" data-login>Login</button>
+      </div>
+    </header>
+
+    <section class="screen active" data-page="home">
+      <div class="hub-grid">
+        <div class="hero panel">
+          <div class="hero-art" aria-hidden="true">👕</div>
+          <div class="hero-copy">
+            <span class="pill">🔥 Daily Quest</span>
+            <h2>Wear it. Prove it. Level it.</h2>
+            <p>Scan QR, verify posts, upload ownership proof — turn real products into living Artifacts.</p>
+            <div class="hero-actions owner-only">
+              <button type="button" class="btn primary" id="startQuest">Wear &amp; Earn</button>
+            </div>
+            <div class="hero-actions guest-only">
+              <button type="button" class="btn primary" data-login>Join Community</button>
+            </div>
+          </div>
+        </div>
+        <aside class="panel quest-panel owner-only">
+          <div class="quest-ring"><strong id="questPct">—</strong></div>
+          <h3 id="questStatus">Daily bonus</h3>
+          <p id="questHint">Complete proof for Activity EAZ until midnight.</p>
+          <div class="quest-list">
+            <div class="quest"><div class="quest-ico">1</div><div><strong>Scan QR</strong><span>Confirm product</span></div><span class="badge orange">Soon</span></div>
+            <div class="quest"><div class="quest-ico">2</div><div><strong>Vote</strong><span>Guard the network</span></div><span class="badge">Open</span></div>
+            <div class="quest"><div class="quest-ico">3</div><div><strong>Upload proof</strong><span>Face optional</span></div><span class="badge">Next</span></div>
+            <button type="button" class="btn ghost sm" id="wearEarnDailyBtn" style="margin-top:8px">Claim daily Free EAZ</button>
+          </div>
+        </aside>
+      </div>
+      <div class="section-head section-head--split">
+        <div><h2>Featured Artifacts</h2><p>Digital twins linked to real products.</p></div>
+        <button type="button" class="btn sm" data-go="vault">Open Vault</button>
+      </div>
+      <div class="cards-3" id="featuredArtifacts">
+        <div class="empty-state" style="grid-column:1/-1"><div class="big">💎</div><p>Loading artifacts…</p></div>
+      </div>
+    </section>
+
+    <section class="screen" data-page="feed">
+      <div class="feed-page">
+        <div class="feed-layout">
+          <div class="feed-main">
+            <div class="feed-stream" id="feedStream">
+              <div class="empty-state"><div class="big">🔥</div><p>Loading feed…</p></div>
+            </div>
+          </div>
+          <aside class="feed-aside owner-only">
+            <div class="panel feed-spotlight">
+              <h3>Live Artifacts</h3>
+              <p class="feed-aside-hint">Recently minted pieces from the vault.</p>
+              <div id="feedSpotlight" class="feed-spotlight-grid"></div>
+            </div>
+          </aside>
+        </div>
+        <div class="guest-only panel feed-guest-cta" style="padding:28px;text-align:center;margin-top:12px">
+          <div style="font-size:48px;margin-bottom:12px">🔥</div>
+          <h3 style="margin-bottom:8px">Join the Artifact Feed</h3>
+          <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Sign in to post, heart and comment on proof-of-ownership moments.</p>
+          <button type="button" class="btn primary" data-login>Sign in</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" data-page="verify">
+      <div class="guest-only panel" style="padding:32px;text-align:center">
+        <div style="font-size:48px;margin-bottom:12px">🔐</div>
+        <h3 style="margin-bottom:8px">Sign in required</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Own an Artifact to verify community items.</p>
+        <button type="button" class="btn primary" data-login>Sign in</button>
+      </div>
+      <div class="verify-grid owner-only">
+        <aside class="panel quest-panel">
+          <h3 style="text-align:left;margin-bottom:10px">Queues</h3>
+          <button type="button" class="queue-btn active" data-queue="design">Designs</button>
+          <button type="button" class="queue-btn" data-queue="product">Products</button>
+          <button type="button" class="queue-btn" data-queue="owner">Ownership</button>
+        </aside>
+        <article class="panel verify-card">
+          <div class="verify-body" id="verifyCardBody">
+            <div class="verify-empty"><div class="big">✓</div><p>Loading verify queue…</p></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="screen" data-page="community">
+      <div class="cp-game owner-only">
+        <div class="cp-wrap">
+          <div class="cp-referral-section">
+            <div class="cp-referral-header">
+              <h2 class="cp-referral-title">Your referral link</h2>
+              <p class="cp-referral-hint">Share your link — commissions are credited as Earned EAZ.</p>
+            </div>
+            <div class="cp-referral-row">
+              <input type="text" class="cp-referral-input" id="refInput" readonly value="" aria-label="Referral link" placeholder="Loading…">
+              <button type="button" class="btn primary cp-share-btn" id="shareRef">Share</button>
+            </div>
+          </div>
+
+          <details class="cp-netinfo" open>
+            <summary>
+              <div class="cp-ni-left">
+                <div class="cp-ni-badge">i</div>
+                <div class="cp-ni-meta">
+                  <div class="cp-ni-title">Network info</div>
+                  <div class="cp-ni-sub">Partners, designs, products, sales &amp; profit</div>
+                </div>
+              </div>
+              <div class="cp-ni-chev" aria-hidden="true">▾</div>
+            </summary>
+            <div class="cp-ni-body">
+              <div class="cp-ni-kv cp-net-kv">
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Partners 1–10</span><span class="cp-v" data-cp-stat="partners">0</span></div></div>
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Designs</span><span class="cp-v" data-cp-stat="designs">0</span></div></div>
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Products</span><span class="cp-v" data-cp-stat="products">0</span></div></div>
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Sales</span><span class="cp-v" data-cp-stat="sales">0</span></div></div>
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Profit</span><span class="cp-v" data-cp-stat="profit">–</span></div></div>
+              </div>
+              <div class="cp-footnote">Stats include your network levels 1–10.</div>
+            </div>
+          </details>
+
+          <details class="cp-netinfo cp-du-section" open>
+            <summary>
+              <div class="cp-ni-left">
+                <div class="cp-ni-badge">👤</div>
+                <div class="cp-ni-meta">
+                  <div class="cp-ni-title">You</div>
+                  <div class="cp-ni-sub">Your own designs, products, sales &amp; profit</div>
+                </div>
+              </div>
+              <div class="cp-ni-chev" aria-hidden="true">▾</div>
+            </summary>
+            <div class="cp-ni-body">
+              <div class="cp-ni-kv cp-du-kv">
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Designs</span><span class="cp-v" data-cp-stat="du-designs">0</span></div></div>
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Products</span><span class="cp-v" data-cp-stat="du-products">0</span></div></div>
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Sales</span><span class="cp-v" data-cp-stat="du-sales">0</span></div></div>
+                <div class="cp-kvc"><div class="cp-kvc-inner"><span class="cp-k">Profit</span><span class="cp-v" data-cp-stat="du-profit">–</span></div></div>
+              </div>
+            </div>
+          </details>
+
+          <div class="cp-card">
+            <details class="cp-level" open>
+              <summary>
+                <div class="cp-left">
+                  <span class="cp-badge">1</span>
+                  <div class="cp-meta">
+                    <div class="cp-lvlname">Level 1 · Direct partners</div>
+                    <div class="cp-hint">Tap a country to see partners</div>
+                  </div>
+                </div>
+                <span class="cp-level-pct" id="cpLevel1Count">0</span>
+                <span class="cp-chev">▾</span>
+              </summary>
+              <div class="cp-content">
+                <div class="cp-country-grid" id="cpLevel1Grid"></div>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+      <div class="guest-only panel" style="padding:28px;text-align:center">
+        <p style="color:var(--muted);font-size:13px">Login to see your network, referral link and partner levels.</p>
+        <button type="button" class="btn primary" style="margin-top:14px" data-login>Sign in</button>
+      </div>
+    </section>
+
+    <section class="screen" data-page="move">
+      <div class="move-page">
+        <div class="move-hero panel">
+          <div class="move-hero-orbit" aria-hidden="true">
+            <span class="move-orbit-ring"></span>
+            <span class="move-orbit-dot move-orbit-dot--a"></span>
+            <span class="move-orbit-dot move-orbit-dot--b"></span>
+            <span class="move-orbit-dot move-orbit-dot--c"></span>
+          </div>
+          <div class="move-hero-grid">
+            <div class="move-hero-copy">
+              <span class="pill move-soon-pill">Coming Soon · Beta Preview</span>
+              <h2 class="move-hero-title">Move to Earn</h2>
+              <p class="move-hero-lead">Turn real steps into <strong>earned EAZ</strong>. Your Character walks with you — motion meets proof of ownership. Health sync ships next; the journey starts here.</p>
+              <div class="move-hero-chips">
+                <span class="move-chip">👟 Steps</span>
+                <span class="move-chip">🐉 Character</span>
+                <span class="move-chip">💎 Artifacts</span>
+                <span class="move-chip">⚡ Earned EAZ</span>
+              </div>
+              <div class="move-status-wrap" id="moveUserStatus">
+                <p class="move-status-loading">Loading your progress…</p>
+              </div>
+            </div>
+            <div class="move-hero-visual" aria-hidden="true">
+              <div class="move-track">
+                <div class="move-track-line"></div>
+                <div class="move-track-node move-track-node--1"><span>Scan</span><small>Product QR</small></div>
+                <div class="move-track-node move-track-node--2"><span>Craft</span><small>Character</small></div>
+                <div class="move-track-node move-track-node--3"><span>Move</span><small>Earn EAZ</small></div>
+                <div class="move-runner">👟</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="move-pillars">
+          <article class="panel move-pillar">
+            <div class="move-pillar-ico">🛍</div>
+            <h3>Wear &amp; Earn</h3>
+            <p>Prove you own the product — earn <strong>Free EAZ</strong> for community actions. The on-ramp.</p>
+            <span class="badge">Live on Hub</span>
+          </article>
+          <article class="panel move-pillar move-pillar--accent">
+            <div class="move-pillar-ico">👟</div>
+            <h3>Move to Earn</h3>
+            <p>Walk with an active Character — earn <strong>locked EAZ</strong> from steps. The endgame loop.</p>
+            <span class="badge orange">Coming Soon</span>
+          </article>
+          <article class="panel move-pillar">
+            <div class="move-pillar-ico">🎨</div>
+            <h3>Character Craft</h3>
+            <p>Swap outfit pieces, collect blueprints, re-render your hero via step quests.</p>
+            <span class="badge purple">Vault</span>
+          </article>
+        </div>
+
+        <div class="move-gallery-head">
+          <div>
+            <h2>Live Product Artifacts</h2>
+            <p>Real digital twins minted from physical eazpire pieces — scanned, claimed, living on-chain in our vault.</p>
+          </div>
+          <span class="badge green" id="moveGalleryCount">Loading…</span>
+        </div>
+        <div class="move-artifact-grid" id="moveArtifactGallery">
+          <div class="empty-state" style="grid-column:1/-1"><div class="big">👟</div><p>Loading artifacts…</p></div>
+        </div>
+
+        <div class="panel move-footnote">
+          <h3>The loop</h3>
+          <ol class="move-loop-list">
+            <li><strong>Claim</strong> Product Artifacts from QR on your merch.</li>
+            <li><strong>Mint</strong> a permanent Character when your outfit set is complete.</li>
+            <li><strong>Activate</strong> your Character — unlock Move to Earn.</li>
+            <li><strong>Move</strong> — sync steps (Health Connect soon) and stack earned EAZ daily.</li>
+          </ol>
+          <div class="move-footnote-actions">
+            <button type="button" class="btn primary" data-go="vault">Open Vault</button>
+            <a class="btn ghost" href="https://www.eazpire.com" target="_blank" rel="noopener">Shop eazpire.com</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" data-page="vault">
+      <div class="owner-only" id="vaultCraftPanel" hidden></div>
+      <div class="inv-grid owner-only" id="vaultGrid">
+        <div class="empty-state" style="grid-column:1/-1"><div class="big">💎</div><p>Loading vault…</p></div>
+      </div>
+      <div class="guest-only panel" style="padding:28px;text-align:center">
+        <p style="color:var(--muted);font-size:13px">Login to open your artifact vault.</p>
+        <button type="button" class="btn primary" style="margin-top:14px" data-login>Sign in</button>
+      </div>
+    </section>
+
+    <div class="feed-compose-float panel owner-only" id="feedComposeFloat" aria-hidden="true">
+      <button type="button" class="feed-compose-float-bar" id="feedComposeFloatBtn" aria-expanded="false">
+        <span class="feed-compose-float-ico" aria-hidden="true">✏️</span>
+        <span class="feed-compose-float-label">Share proof</span>
+      </button>
+      <div class="feed-compose-float-panel" id="feedComposePanel">
+        <div class="feed-compose-float-grabber-row">
+          <button type="button" class="feed-compose-float-grabber" id="feedComposeCollapseBtn" aria-label="Collapse compose">
+            <span class="feed-compose-float-grabber-bar" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="feed-compose-float-body">
+          <div class="feed-compose-head">
+            <span class="pill">Share proof</span>
+            <span class="feed-compose-hint">Show your Artifact to the community</span>
+          </div>
+          <textarea id="feedComposeText" class="feed-compose-input" rows="3" maxlength="500" placeholder="What are you wearing today? Link your Product Artifact…"></textarea>
+          <div class="feed-camera-panel" id="feedCameraPanel" hidden>
+            <div class="feed-camera-head">
+              <strong>Camera proof (required)</strong>
+              <button type="button" class="btn ghost sm" id="feedCameraFlip">Flip camera</button>
+            </div>
+            <div class="feed-camera-mode" role="group" aria-label="Capture mode">
+              <button type="button" class="feed-camera-mode-btn is-active" data-camera-mode="photo">Photo</button>
+              <button type="button" class="feed-camera-mode-btn" data-camera-mode="video">Video</button>
+            </div>
+            <div class="feed-camera-stage">
+              <video id="feedCameraVideo" class="feed-camera-video" playsinline autoplay muted></video>
+              <img id="feedCameraPreview" class="feed-camera-preview" alt="" hidden>
+              <video id="feedCameraPreviewVideo" class="feed-camera-preview feed-camera-preview-video" playsinline loop muted hidden></video>
+              <canvas id="feedCameraCanvas" hidden></canvas>
+              <span class="feed-camera-rec-dot" aria-hidden="true"></span>
+            </div>
+            <p class="feed-camera-fallback" id="feedCameraFallback" hidden></p>
+            <div class="feed-camera-actions">
+              <button type="button" class="btn sm" id="feedCameraCapture">Capture</button>
+              <button type="button" class="btn ghost sm" id="feedCameraRetake" hidden>Retake</button>
+              <button type="button" class="btn ghost sm" id="feedCameraCancel">Cancel</button>
+            </div>
+          </div>
+          <div class="feed-compose-row">
+            <button type="button" class="btn ghost sm" id="feedOpenCameraBtn">📷 Camera proof</button>
+            <select id="feedArtifactPick" class="feed-artifact-pick" aria-label="Attach artifact">
+              <option value="">No artifact attached</option>
+            </select>
+            <button type="button" class="btn primary sm" id="feedPostBtn">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<nav class="bottom-nav" aria-label="Mobile nav">
+  <button type="button" class="active" data-go="home"><span class="ico">🎮</span>Hub</button>
+  <button type="button" data-go="feed"><span class="ico">🔥</span>Feed</button>
+  <button type="button" data-go="verify"><span class="ico">✓</span>Verify</button>
+  <button type="button" data-go="community"><span class="ico">🤝</span>Squad</button>
+  <button type="button" data-go="vault"><span class="ico">💎</span>Vault</button>
+  <button type="button" data-go="move"><span class="ico">👟</span>Move</button>
+</nav>
+
+<div class="community-login-bg" id="communityLoginModal" aria-hidden="true">
+  <div class="community-login panel" role="dialog" aria-modal="true" aria-labelledby="communityLoginTitle">
+    <div class="community-login-glow" aria-hidden="true"></div>
+    <div class="community-login-head">
+      <div>
+        <div class="kicker">Eazpire Wear</div>
+        <h2 id="communityLoginTitle">Sign in to play</h2>
+      </div>
+      <button type="button" class="community-login-close" id="communityLoginClose" aria-label="Close">✕</button>
+    </div>
+    <p class="community-login-sub">Use your Eazpire account. Pick a sign-in method on the next screen — you’ll land back here when done.</p>
+    <div class="community-login-methods">
+      <button type="button" class="btn primary community-login-btn" data-oauth-start>
+        <span class="community-login-btn-ico" aria-hidden="true">🛍</span>
+        <span>Continue with Shop</span>
+      </button>
+      <button type="button" class="btn ghost community-login-btn" data-oauth-start>
+        <span class="community-login-btn-ico community-login-btn-ico--google" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        </span>
+        <span>Google</span>
+      </button>
+      <button type="button" class="btn ghost community-login-btn" data-oauth-start>
+        <span class="community-login-btn-ico" aria-hidden="true">✉</span>
+        <span>Email</span>
+      </button>
+    </div>
+    <p class="community-login-foot">Secure login via <strong>account.eazpire.com</strong></p>
+  </div>
+</div>
+
+<div class="profile-modal-bg" id="profileModal" aria-hidden="true">
+  <div class="profile-modal" role="dialog" aria-labelledby="profileTitle">
+    <div class="profile-modal-head">
+      <h3 id="profileTitle">Player Profile</h3>
+      <button type="button" class="profile-modal-close" id="profileClose" aria-label="Close">✕</button>
+    </div>
+    <div class="profile-user">
+      <div class="profile-avatar" id="profileAvatar">
+        <img id="profileAvatarImg" alt="" width="56" height="56" hidden>
+        <span class="profile-avatar-fallback" id="profileAvatarFallback" aria-hidden="true">?</span>
+      </div>
+      <div class="profile-user-meta">
+        <strong id="profileUsername">@guest</strong>
+        <div class="profile-email-row" id="profileEmailRow" hidden>
+          <span class="profile-email" id="profileEmail"></span>
+          <button type="button" class="btn red sm profile-logout-btn" id="profileLogoutBtn">Logout</button>
+        </div>
+        <span id="profileSubtitle">Sign in to see your stats</span>
+        <span class="badge green" id="profileBadge" hidden>Active</span>
+      </div>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat">
+        <span class="profile-stat-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="M5 3h10a1 1 0 011 1v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5"/><path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
+        <div class="profile-stat-body"><strong id="profilePosts">—</strong><span>Posts</span></div>
+      </div>
+      <div class="profile-stat">
+        <span class="profile-stat-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10.2l2.1 2.1 4.8-4.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <div class="profile-stat-body"><strong id="profileVotes">—</strong><span>Votes</span></div>
+      </div>
+      <div class="profile-stat">
+        <span class="profile-stat-icon profile-stat-icon--coin" aria-hidden="true">
+          <img src="https://pub-2ffb11d4a361463498b9a842a87a870c.r2.dev/brand/coin/eaz-coin-logo.png" alt="" width="22" height="22">
+        </span>
+        <div class="profile-stat-body"><strong id="profileEaz">—</strong><span>EAZ</span></div>
+      </div>
+    </div>
+    <div class="profile-stats profile-stats--secondary">
+      <div class="profile-stat">
+        <span class="profile-stat-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="M3 6.5l7-3.5 7 3.5v7L10 17 3 13.5v-7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 3v14M3 6.5l7 3.5 7-3.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </span>
+        <div class="profile-stat-body"><strong id="profileProductArtifacts">—</strong><span>Product Artifacts</span></div>
+      </div>
+      <div class="profile-stat">
+        <span class="profile-stat-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" fill="none" width="20" height="20"><circle cx="10" cy="6.5" r="2.75" stroke="currentColor" stroke-width="1.5"/><path d="M5.2 14.6l-.4.7a.6.6 0 00.5.9h9.4a.6.6 0 00.5-.9l-.4-.7a5.5 5.5 0 00-9.6 0z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        </span>
+        <div class="profile-stat-body"><strong id="profileCharacterNfts">—</strong><span>Character NFTs</span></div>
+      </div>
+    </div>
+    <div class="profile-foot" id="profileFoot">
+      <button type="button" class="btn primary" id="profileLoginBtn" data-login>Login</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal" role="dialog">
+    <div class="modal-head"><h3>Daily Quest</h3><button type="button" id="modalX" aria-label="Close">✕</button></div>
+    <div class="modal-steps" id="mSteps"><i class="now"></i><i></i><i></i><i></i></div>
+    <div class="modal-body"><div class="big" id="mIcon">📦</div><div id="mText">Choose an Artifact from your vault</div></div>
+    <div class="modal-foot">
+      <button type="button" class="btn ghost" id="mBack">Back</button>
+      <button type="button" class="btn primary" id="mNext">Continue</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><div class="quest-ico">✓</div><div><strong id="tTitle">Done</strong><span id="tText">OK</span></div></div>
+
+<div class="share-modal" id="shareModal" aria-hidden="true">
+  <div class="share-modal__backdrop" data-share-close></div>
+  <div class="share-modal__content" role="dialog" aria-labelledby="shareModalTitle">
+    <div class="share-modal__header">
+      <h3 class="share-modal__title" id="shareModalTitle">Share</h3>
+      <button type="button" class="share-modal__close" data-share-close aria-label="Close">×</button>
+    </div>
+    <div class="share-modal__copy-row">
+      <input type="text" class="share-modal__input" id="shareModalInput" readonly>
+      <button type="button" class="btn sm" id="shareModalCopy">Copy link</button>
+    </div>
+    <div class="share-modal__social">
+      <a href="#" data-share-social="whatsapp">WhatsApp</a>
+      <a href="#" data-share-social="x">X (Twitter)</a>
+      <a href="#" data-share-social="telegram">Telegram</a>
+      <a href="#" data-share-social="email">E-Mail</a>
+    </div>
+  </div>
+</div>
+
+<div class="feed-product-modal" id="feedProductModal" aria-hidden="true">
+  <div class="feed-product-modal__backdrop" data-feed-product-close></div>
+  <div class="feed-product-modal__sheet" role="dialog" aria-modal="true" aria-labelledby="feedProductModalTitle">
+    <div class="feed-product-modal__header">
+      <h3 class="feed-product-modal__title" id="feedProductModalTitle">Product</h3>
+      <button type="button" class="feed-product-modal__close" data-feed-product-close aria-label="Close">×</button>
+    </div>
+    <div class="feed-product-modal__main-wrap" id="feedProductModalMainWrap">
+      <button type="button" class="feed-product-modal-nav feed-product-modal-nav--prev" id="feedProductModalPrev" aria-label="Previous product" hidden>‹</button>
+      <div class="feed-product-modal__main" id="feedProductModalMain"></div>
+      <button type="button" class="feed-product-modal-nav feed-product-modal-nav--next" id="feedProductModalNext" aria-label="Next product" hidden>›</button>
+    </div>
+    <div class="feed-product-modal__grid-wrap">
+      <p class="feed-product-modal__grid-label">Same design on other products</p>
+      <div class="feed-product-modal__grid" id="feedProductModalGrid"></div>
+    </div>
+    <div class="feed-product-modal__footer">
+      <a class="btn primary" id="feedProductModalShopBtn" href="#" target="_blank" rel="noopener noreferrer" hidden>View in Shop</a>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js?v=11"></script>
+<script src="/js/login-modal.js?v=9"></script>
+<script src="/js/auth.js?v=9"></script>
+<script src="/js/community-panel.js?v=9"></script>
+<script src="/js/wear-earn.js?v=9"></script>
+<script src="/js/move-to-earn.js?v=9"></script>
+<script src="/js/character-craft.js?v=9"></script>
+<script src="/js/feed-camera.js?v=3"></script>
+<script src="/js/feed-product-modal.js?v=3"></script>
+<script src="/js/feed.js?v=21"></script>
+<script src="/js/verify-hub.js?v=2"></script>
+<script src="/js/profile-modal.js?v=9"></script>
+<script src="/js/app.js?v=11"></script>
+</body>
+</html>
