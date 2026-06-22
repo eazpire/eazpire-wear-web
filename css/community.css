@@ -54,6 +54,7 @@
     }
     .wear-boot-loader__logo{
       width:min(520px,88vw);height:auto;display:block;margin:0 auto;
+      background:transparent;
       animation:wearBootLogoGlow 2.2s ease-in-out infinite;
     }
     @keyframes wearBootLogoGlow{
@@ -118,6 +119,7 @@
     .mark::after{display:none}
     .mark img{
       width:min(78px,100%);height:auto;object-fit:contain;object-position:center;display:block;
+      background:transparent;
       filter:drop-shadow(0 0 12px rgba(255,122,26,.28));
       animation:wearMarkPulse 2.4s ease-in-out infinite;
       transform-origin:center center;
