@@ -16,6 +16,8 @@
       if (entry.type === "emoji") {
         el.textContent = entry.value || el.textContent;
         el.removeAttribute("data-wear-img");
+        var injected = el.querySelector("img[data-wear-img]");
+        if (injected) injected.remove();
         return;
       }
       if (entry.type === "image" && entry.url) {
