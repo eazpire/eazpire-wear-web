@@ -45,6 +45,9 @@
     if (name === "move" && global.CommunityMoveToEarn) {
       global.CommunityMoveToEarn.refresh();
     }
+    if (name === "move" && global.CommunityDiscovery) {
+      global.CommunityDiscovery.refresh();
+    }
     if (name === "feed" && global.CommunityFeed) {
       global.CommunityFeed.refresh();
     }

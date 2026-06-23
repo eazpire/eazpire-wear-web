@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/community.css?v=36">
+  <link rel="stylesheet" href="/css/discovery.css?v=1">
 </head>
 <body class="is-boot-loading" data-role="guest">
 
@@ -310,13 +311,28 @@
           <div class="empty-state" style="grid-column:1/-1"><div class="big">👟</div><p>Loading artifacts…</p></div>
         </div>
 
+        <div class="panel discovery-panel">
+          <span class="pill">World Discovery · Live</span>
+          <h3>Explore the real world</h3>
+          <p>Fog of war, energy sessions, loot at the edge, and global rankings — walk with your Character.</p>
+          <div class="discovery-grid">
+            <div>
+              <div id="discoveryStatus"><p class="discovery-muted">Loading explorer…</p></div>
+              <div id="discoveryRankings" style="margin-top:12px"></div>
+            </div>
+            <div class="discovery-map-wrap">
+              <div id="discoveryMap" aria-label="Discovery map"></div>
+            </div>
+          </div>
+        </div>
+
         <div class="panel move-footnote">
           <h3>The loop</h3>
           <ol class="move-loop-list">
             <li><strong>Claim</strong> Product Artifacts from QR on your merch.</li>
             <li><strong>Mint</strong> a permanent Character when your outfit set is complete.</li>
             <li><strong>Activate</strong> your Character — unlock Move to Earn.</li>
-            <li><strong>Move</strong> — sync steps (Health Connect soon) and stack earned EAZ daily.</li>
+            <li><strong>Explore</strong> — start a session, reveal the map, earn loot at the fog edge.</li>
           </ol>
           <div class="move-footnote-actions">
             <button type="button" class="btn primary" data-go="vault">Open Vault</button>
@@ -572,7 +588,9 @@
 <script src="/js/auth.js?v=10"></script>
 <script src="/js/community-panel.js?v=10"></script>
 <script src="/js/wear-earn.js?v=10"></script>
-<script src="/js/move-to-earn.js?v=10"></script>
+<script src="/js/move-to-earn.js?v=11"></script>
+<script src="/js/discovery.js?v=1"></script>
+<script src="/js/discovery-map.js?v=1"></script>
 <script src="/js/character-craft.js?v=10"></script>
 <script src="/js/feed-camera.js?v=3"></script>
 <script src="/js/feed-product-modal.js?v=10"></script>

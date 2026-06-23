@@ -1,0 +1,76 @@
+.discovery-panel {
+  margin-top: 20px;
+}
+
+.discovery-panel h3 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+}
+
+.discovery-map-wrap {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.08));
+  min-height: 320px;
+  margin-top: 12px;
+}
+
+#discoveryMap {
+  width: 100%;
+  height: 320px;
+}
+
+.discovery-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.discovery-session {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.discovery-muted {
+  color: var(--muted, #888);
+  font-size: 13px;
+}
+
+.discovery-rank-list {
+  margin: 8px 0 0;
+  padding-left: 1.2rem;
+  font-size: 13px;
+}
+
+.discovery-rank-num {
+  color: #f59e0b;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.discovery-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .discovery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.discovery-loot-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  border: 1px solid #f59e0b;
+  padding: 12px 18px;
+  border-radius: 10px;
+  z-index: 9000;
+  font-size: 13px;
+}

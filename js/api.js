@@ -138,6 +138,67 @@
         body: { steps_delta: stepsDelta },
       });
     },
+    discoveryConfig: function () {
+      return dispatch("discovery-config", {});
+    },
+    discoveryStatus: function () {
+      return dispatch("discovery-status", {});
+    },
+    discoverySyncTrack: function (batchId, points, clientMeta) {
+      return dispatch("discovery-sync-track", {
+        method: "POST",
+        body: { batch_id: batchId, points: points, client: clientMeta || {} },
+      });
+    },
+    discoveryMapTiles: function (regionId) {
+      var q = {};
+      if (regionId) q.region_id = regionId;
+      return dispatch("discovery-map-tiles", { query: q });
+    },
+    discoveryZones: function (regionId) {
+      var q = {};
+      if (regionId) q.region_id = regionId;
+      return dispatch("discovery-zones", { query: q });
+    },
+    moveSessionStart: function () {
+      return dispatch("move-session-start", { method: "POST", body: {} });
+    },
+    moveSessionStatus: function () {
+      return dispatch("move-session-status", {});
+    },
+    moveSessionEnd: function () {
+      return dispatch("move-session-end", { method: "POST", body: {} });
+    },
+    discoveryLootNearby: function () {
+      return dispatch("discovery-loot-nearby", {});
+    },
+    discoveryLootClaim: function (lootId) {
+      return dispatch("discovery-loot-claim", {
+        method: "POST",
+        body: { loot_id: lootId },
+      });
+    },
+    discoveryBiomeStats: function (regionId) {
+      var q = {};
+      if (regionId) q.region_id = regionId;
+      return dispatch("discovery-biome-stats", { query: q });
+    },
+    discoveryRankingsGlobal: function (limit) {
+      return dispatch("discovery-rankings-global", {
+        query: { limit: limit || 50 },
+      });
+    },
+    discoveryRankingsRegion: function (regionId, limit) {
+      return dispatch("discovery-rankings-region", {
+        query: { region_id: regionId || "earth", limit: limit || 50 },
+      });
+    },
+    discoveryRankingsMe: function () {
+      return dispatch("discovery-rankings-me", {});
+    },
+    discoveryAchievements: function () {
+      return dispatch("discovery-achievements", {});
+    },
     feedList: function (limit, cursor) {
       var q = { limit: limit || 20 };
       if (cursor) q.cursor = cursor;
