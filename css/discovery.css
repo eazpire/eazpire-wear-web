@@ -74,3 +74,27 @@
   z-index: 9000;
   font-size: 13px;
 }
+
+.discovery-biome-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.discovery-biome-chip {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #22c55e;
+  text-transform: capitalize;
+}
+
+.discovery-loot-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  margin-top: 8px;
+  font-size: 13px;
+}
