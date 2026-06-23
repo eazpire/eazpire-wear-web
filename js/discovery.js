@@ -19,6 +19,94 @@
     return m + ":" + (s < 10 ? "0" : "") + s;
   }
 
+  function showLootToast(message) {
+    var el = document.createElement("div");
+    el.className = "discovery-loot-toast";
+    el.textContent = message;
+    document.body.appendChild(el);
+    setTimeout(function () {
+      el.remove();
+    }, 4000);
+  }
+
+  async function renderBiomes(regionId) {
+    var el = document.getElementById("discoveryBiomes");
+    if (!el || !global.CommunityApi.discoveryBiomeStats) return;
+
+    try {
+      var res = await global.CommunityApi.discoveryBiomeStats(regionId);
+      var biomes = res.biomes || [];
+      var catalog = res.catalog || [];
+      if (!biomes.length) {
+        el.innerHTML = "";
+        return;
+      }
+      var colorByKey = {};
+      catalog.forEach(function (c) {
+        colorByKey[c.biome_key] = c.color_hex || "#22c55e";
+      });
+      el.innerHTML =
+        '<div class="discovery-biome-chips">' +
+        biomes
+          .map(function (b) {
+            var color = colorByKey[b.biome_key] || "#22c55e";
+            return (
+              '<span class="discovery-biome-chip" style="border-color:' +
+              escapeHtml(color) +
+              '">' +
+              escapeHtml(b.biome_key) +
+              " · " +
+              (b.cells_discovered || 0) +
+              "</span>"
+            );
+          })
+          .join("") +
+        "</div>";
+    } catch (e) {
+      el.innerHTML = "";
+    }
+  }
+
+  async function renderLoot() {
+    var el = document.getElementById("discoveryLoot");
+    if (!el || !global.CommunityApi.discoveryLootNearby) return;
+
+    try {
+      var res = await global.CommunityApi.discoveryLootNearby();
+      var loots = res.loots || [];
+      if (!loots.length) {
+        el.innerHTML = '<p class="discovery-muted">No loot at the fog edge right now.</p>';
+        return;
+      }
+      el.innerHTML = loots
+        .map(function (loot) {
+          return (
+            '<div class="discovery-loot-item panel">' +
+            "<span>Fog-edge loot</span> " +
+            '<button type="button" class="btn primary sm" data-loot-id="' +
+            escapeHtml(loot.id) +
+            '">Claim</button></div>'
+          );
+        })
+        .join("");
+
+      el.querySelectorAll("[data-loot-id]").forEach(function (btn) {
+        btn.addEventListener("click", async function () {
+          var id = btn.getAttribute("data-loot-id");
+          var claim = await global.CommunityApi.discoveryLootClaim(id);
+          if (claim.ok) {
+            showLootToast("Loot claimed!");
+            renderLoot();
+          } else {
+            showLootToast(claim.error || "Claim failed");
+          }
+        });
+      });
+    } catch (e) {
+      el.innerHTML = "";
+    }
+  }
+
   async function renderStatus() {
     var wrap = document.getElementById("discoveryStatus");
     if (!wrap || !global.CommunityApi.discoveryStatus) return;
@@ -54,7 +142,6 @@
           '<button type="button" class="btn primary sm" id="discoveryStartSession">Start Explore Session</button>';
       }
 
-      var pct = st.regions && st.regions[0] ? st.regions[0].pct : 0;
       wrap.innerHTML =
         '<div class="discovery-stats">' +
         sessionHtml +
@@ -69,8 +156,14 @@
         startBtn.addEventListener("click", async function () {
           await global.CommunityApi.moveSessionStart();
           renderStatus();
+          renderLoot();
         });
       }
+
+      if (st.home && st.home.city_id) {
+        renderBiomes(st.home.city_id);
+      }
+      if (st.session) renderLoot();
     } catch (e) {
       wrap.innerHTML = '<p class="discovery-muted">Explorer offline.</p>';
     }
@@ -84,7 +177,7 @@
       var res = await global.CommunityApi.discoveryRankingsGlobal(20);
       var rows = res.rankings || [];
       if (!rows.length) {
-        el.innerHTML = "<p class=\"discovery-muted\">No rankings yet — be the first explorer.</p>";
+        el.innerHTML = '<p class="discovery-muted">No rankings yet — be the first explorer.</p>';
         return;
       }
       el.innerHTML =
