@@ -138,6 +138,18 @@
         body: { steps_delta: stepsDelta },
       });
     },
+    moveToEarnWallet: function () {
+      return dispatch("move-to-earn-wallet", {});
+    },
+    moveToEarnConvertToShopCredit: function (amountEaz, channel) {
+      return dispatch("move-to-earn-convert-to-shop-credit", {
+        method: "POST",
+        body: {
+          amount_eaz: amountEaz,
+          channel: channel || "wear_web",
+        },
+      });
+    },
     discoveryConfig: function () {
       return dispatch("discovery-config", {});
     },
