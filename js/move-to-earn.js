@@ -112,26 +112,71 @@
         return;
       }
 
+      var mode = st.move_earn_mode || "eaz_stub";
+      if (mode === "eaz_stub") {
+        wrap.innerHTML =
+          '<div class="move-status-card move-status-card--unlocked">' +
+          '<span class="move-status-badge move-status-badge--live">Beta</span>' +
+          "<h3>Move to Earn — preview</h3>" +
+          "<p>Today: <strong>" +
+          (st.eaz_earned_today || 0) +
+          " / " +
+          (st.daily_cap_eaz || 0) +
+          "</strong> earned EAZ · Health sync coming soon.</p>" +
+          '<button type="button" class="btn primary sm" id="moveSyncStepsBtn">Sync 1k steps (beta stub)</button>' +
+          "</div>";
+
+        var btn = qs("moveSyncStepsBtn");
+        if (btn) {
+          btn.addEventListener("click", async function () {
+            var r = await global.CommunityApi.moveToEarnSyncSteps(1000);
+            if (r.ok && r.eaz_credited > 0) {
+              alert("+" + r.eaz_credited + " earned EAZ credited (locked until payout rules apply).");
+            } else if (r.ok) {
+              alert("Steps synced. Daily cap may be reached.");
+            } else {
+              alert(r.error || "Sync failed");
+            }
+            renderUserStatus();
+          });
+        }
+        return;
+      }
+
+      var score = st.activity_score || {};
+      var capped = score.capped_score || 0;
+      var simHtml = "";
+      try {
+        var sim = await global.CommunityApi.economySimulatedPoolShare();
+        if (sim && sim.ok) {
+          var cents = sim.projected_shop_credit_cents || 0;
+          simHtml =
+            '<p class="move-status-sim">Projected Shop Credit this week: <strong>' +
+            (cents / 100).toFixed(2) +
+            " EUR</strong> (simulation)</p>";
+        }
+      } catch (_) {}
+
       wrap.innerHTML =
         '<div class="move-status-card move-status-card--unlocked">' +
-        '<span class="move-status-badge move-status-badge--live">Beta</span>' +
-        "<h3>Move to Earn — preview</h3>" +
-        "<p>Today: <strong>" +
-        (st.eaz_earned_today || 0) +
-        " / " +
-        (st.daily_cap_eaz || 0) +
-        "</strong> earned EAZ · Health sync coming soon.</p>" +
-        '<button type="button" class="btn primary sm" id="moveSyncStepsBtn">Sync 1k steps (beta stub)</button>' +
+        '<span class="move-status-badge move-status-badge--live">' +
+        (mode === "shop_credit" ? "Shop Credit" : "Activity Score") +
+        "</span>" +
+        "<h3>Move, explore, earn Shop Credit</h3>" +
+        "<p>Today's activity score: <strong>" +
+        capped +
+        "</strong>. Walk, discovery, and community actions count toward the weekly pool.</p>" +
+        simHtml +
+        '<p class="move-status-note">Shop Credit is for eazpire products only — not withdrawable as cash.</p>' +
+        '<button type="button" class="btn primary sm" id="moveSyncStepsBtn">Sync 1k steps</button>' +
         "</div>";
 
-      var btn = qs("moveSyncStepsBtn");
-      if (btn) {
-        btn.addEventListener("click", async function () {
+      var syncBtn = qs("moveSyncStepsBtn");
+      if (syncBtn) {
+        syncBtn.addEventListener("click", async function () {
           var r = await global.CommunityApi.moveToEarnSyncSteps(1000);
-          if (r.ok && r.eaz_credited > 0) {
-            alert("+" + r.eaz_credited + " earned EAZ credited (locked until payout rules apply).");
-          } else if (r.ok) {
-            alert("Steps synced. Daily cap may be reached.");
+          if (r.ok) {
+            alert("Steps synced. Activity score updated.");
           } else {
             alert(r.error || "Sync failed");
           }

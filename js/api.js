@@ -235,5 +235,26 @@
         query: { design_id: designId, owner_id: ownerId || "" },
       });
     },
+    fetchOp: function (op, options) {
+      return dispatch(op, options || {});
+    },
+    shopCreditBalance: function (currency) {
+      var q = {};
+      if (currency) q.currency = currency;
+      return dispatch("shop-credit-balance", { query: q });
+    },
+    economySimulatedPoolShare: function (period) {
+      var q = {};
+      if (period) q.period = period;
+      return dispatch("economy-simulated-pool-share", { query: q });
+    },
+    moveRewardsStatus: function (period) {
+      var q = {};
+      if (period) q.period = period;
+      return dispatch("move-rewards-status", { query: q });
+    },
+    sponsoredLootClaim: function (body) {
+      return dispatch("sponsored-loot-claim", { method: "POST", body: body || {} });
+    },
   };
 })(window);
