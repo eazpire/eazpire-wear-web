@@ -776,9 +776,64 @@
 .move-loop-list{margin:0 0 14px;padding-left:18px;color:var(--muted);font-size:13px;line-height:1.55}
 .move-loop-list li{margin-bottom:6px}
 .move-footnote-actions{display:flex;flex-wrap:wrap;gap:8px}
+
+/* EAZ Wallet */
+.wallet-page{display:flex;flex-direction:column;gap:18px}
+.wallet-hero{position:relative;overflow:hidden;border-color:rgba(255,209,102,.28)}
+.wallet-hero-glow{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% 20%,rgba(255,122,26,.22),transparent 42%),
+    radial-gradient(circle at 88% 10%,rgba(255,209,102,.14),transparent 38%),
+    radial-gradient(circle at 50% 100%,rgba(94,234,212,.12),transparent 45%);
+}
+.wallet-hero-inner{position:relative;padding:22px 24px}
+.wallet-pill{background:rgba(255,209,102,.12);border-color:rgba(255,209,102,.35);color:var(--gold)}
+.wallet-hero-title{
+  font-size:clamp(26px,4vw,36px);letter-spacing:-.04em;margin:10px 0 8px;
+  background:linear-gradient(135deg,var(--text),var(--gold));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.wallet-hero-lead{color:var(--muted);font-size:14px;max-width:52ch;line-height:1.55}
+.wallet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.wallet-card{
+  padding:18px;display:flex;flex-direction:column;gap:8px;min-height:150px;
+  border-color:rgba(255,255,255,.08);background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+}
+.wallet-card--activity{border-color:rgba(255,122,26,.35);background:linear-gradient(160deg,rgba(255,122,26,.12),rgba(255,255,255,.03))}
+.wallet-card--today{border-color:rgba(94,234,212,.35);background:linear-gradient(160deg,rgba(94,234,212,.1),rgba(255,255,255,.03))}
+.wallet-card--total{border-color:rgba(255,209,102,.32);background:linear-gradient(160deg,rgba(255,209,102,.1),rgba(255,255,255,.03))}
+.wallet-card-top{display:flex;align-items:center;gap:8px}
+.wallet-card-ico{font-size:22px;line-height:1}
+.wallet-card-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--soft)}
+.wallet-card-value{font-size:clamp(22px,3vw,28px);letter-spacing:-.03em;color:var(--text)}
+.wallet-card-value--cyan{color:var(--cyan)}
+.wallet-card-value--gold{color:var(--gold)}
+.wallet-card-hint{font-size:12px;color:var(--muted);line-height:1.45;margin:0;flex:1}
+.wallet-convert-panel{padding:20px;border-color:rgba(94,234,212,.28);background:linear-gradient(160deg,rgba(94,234,212,.08),rgba(255,255,255,.03))}
+.wallet-convert-head h3{margin:0 0 6px;font-size:17px}
+.wallet-convert-head p{margin:0 0 14px;font-size:12px;color:var(--muted);line-height:1.45}
+.wallet-convert-balances{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px}
+.wallet-convert-stat{
+  flex:1;min-width:120px;padding:12px 14px;border-radius:14px;
+  border:1px solid rgba(94,234,212,.25);background:rgba(0,0,0,.22);
+}
+.wallet-convert-stat span{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--soft)}
+.wallet-convert-stat strong{display:block;margin-top:4px;font-size:18px;color:var(--cyan)}
+.wallet-convert-stat--muted{border-color:rgba(255,255,255,.1)}
+.wallet-convert-stat--muted strong{color:var(--gold)}
+.wallet-convert-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.wallet-convert-input{max-width:140px}
+.wallet-convert-note{margin:10px 0 0;font-size:11px;color:var(--soft)}
+.wallet-convert-locked{text-align:center;padding:12px 8px}
+.wallet-convert-locked-ico{font-size:40px;display:block;margin-bottom:8px}
+.wallet-convert-locked h3{margin:0 0 6px}
+.wallet-convert-locked p{color:var(--muted);font-size:12px;margin:0 0 12px;line-height:1.45}
+.wallet-status-loading{color:var(--soft);font-size:12px;margin:0}
 @media(max-width:960px){
   .move-hero-grid,.move-pillars{grid-template-columns:1fr}
   .move-hero-visual{order:-1}
+  .wallet-grid{grid-template-columns:1fr}
 }
 @media(max-width:760px){
   .bottom-nav{grid-template-columns:repeat(6,1fr)}

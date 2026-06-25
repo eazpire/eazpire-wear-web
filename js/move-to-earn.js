@@ -72,70 +72,6 @@
     }
   }
 
-  async function renderMoveToEarnWallet(st, parentEl) {
-    if (!parentEl || !st.unlocked) return;
-    var wallet = st.move_to_earn_wallet;
-    if (!wallet && global.CommunityApi.moveToEarnWallet) {
-      try {
-        var w = await global.CommunityApi.moveToEarnWallet();
-        if (w.ok) wallet = w.wallet;
-      } catch (_) {}
-    }
-    if (!wallet) return;
-
-    var avail = Number(wallet.balance_eazc_available || 0);
-    var locked = Number(wallet.balance_eazc_locked || 0);
-    var minEaz = Number(wallet.min_convert_eaz || 1);
-    var card = document.createElement("div");
-    card.className = "move-status-card move-status-card--wallet";
-    card.innerHTML =
-      "<h3>Move to Earn Wallet</h3>" +
-      "<p>Available EAZC: <strong>" +
-      avail.toFixed(2) +
-      "</strong>" +
-      (locked > 0 ? " · Locked: <strong>" + locked.toFixed(2) + "</strong>" : "") +
-      "</p>" +
-      '<p class="move-status-note">Convert to Shop Credit here only — not in general EAZ settings.</p>' +
-      '<div class="move-wallet-convert" style="display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap;">' +
-      '<input type="number" min="' +
-      minEaz +
-      '" step="0.01" id="moveWalletConvertAmount" class="input sm" style="max-width:120px" placeholder="' +
-      minEaz +
-      '" />' +
-      '<button type="button" class="btn primary sm" id="moveWalletConvertBtn">Convert to Shop Credit</button>' +
-      "</div>";
-
-    parentEl.appendChild(card);
-
-    var convertBtn = card.querySelector("#moveWalletConvertBtn");
-    var amountInput = card.querySelector("#moveWalletConvertAmount");
-    if (convertBtn) {
-      convertBtn.addEventListener("click", async function () {
-        var raw = amountInput && amountInput.value ? Number(amountInput.value) : avail;
-        var amount = raw > 0 ? raw : avail;
-        if (amount < minEaz) {
-          alert("Minimum " + minEaz + " EAZC");
-          return;
-        }
-        var r = await global.CommunityApi.moveToEarnConvertToShopCredit(amount, "wear_web");
-        if (r.ok) {
-          alert(
-            "Converted " +
-              r.eazc_debited +
-              " EAZC to Shop Credit (" +
-              (r.shop_credit_cents / 100).toFixed(2) +
-              " " +
-              (r.shop_credit_currency || "EUR") +
-              ")."
-          );
-          renderUserStatus();
-        } else {
-          alert(r.error || r.message || "Convert failed");
-        }
-      });
-    }
-  }
-
   async function renderUserStatus() {
     var wrap = qs("moveUserStatus");
     if (!wrap) return;
@@ -144,7 +80,7 @@
       wrap.innerHTML =
         '<div class="move-status-card move-status-card--guest">' +
         '<strong>Join the movement</strong>' +
-        "<p>Sign in to track your Character unlock and preview earned EAZ from steps.</p>" +
+        "<p>Sign in to unlock Move to Earn with your active Character.</p>" +
         '<button type="button" class="btn primary sm" data-login>Sign in</button>' +
         "</div>";
       return;
@@ -181,13 +117,10 @@
         wrap.innerHTML =
           '<div class="move-status-card move-status-card--unlocked">' +
           '<span class="move-status-badge move-status-badge--live">Beta</span>' +
-          "<h3>Move to Earn — preview</h3>" +
-          "<p>Today: <strong>" +
-          (st.eaz_earned_today || 0) +
-          " / " +
-          (st.daily_cap_eaz || 0) +
-          "</strong> earned EAZ · Health sync coming soon.</p>" +
+          "<h3>Move to Earn — active</h3>" +
+          "<p>Walk with your Character — earnings appear in your <strong>Wallet</strong>. Health sync coming soon.</p>" +
           '<button type="button" class="btn primary sm" id="moveSyncStepsBtn">Sync 1k steps (beta stub)</button>' +
+          '<button type="button" class="btn ghost sm" data-go="wallet">Open Wallet</button>' +
           "</div>";
 
         var btn = qs("moveSyncStepsBtn");
@@ -195,7 +128,7 @@
           btn.addEventListener("click", async function () {
             var r = await global.CommunityApi.moveToEarnSyncSteps(1000);
             if (r.ok && r.eaz_credited > 0) {
-              alert("+" + r.eaz_credited + " earned EAZ credited (locked until payout rules apply).");
+              alert("Steps synced — check your Wallet for updated earnings.");
             } else if (r.ok) {
               alert("Steps synced. Daily cap may be reached.");
             } else {
@@ -204,7 +137,6 @@
             renderUserStatus();
           });
         }
-        await renderMoveToEarnWallet(st, wrap);
         return;
       }
 
@@ -227,13 +159,13 @@
         '<span class="move-status-badge move-status-badge--live">' +
         (mode === "shop_credit" ? "Shop Credit" : "Activity Score") +
         "</span>" +
-        "<h3>Move, explore, earn Shop Credit</h3>" +
+        "<h3>Move, explore, earn</h3>" +
         "<p>Today's activity score: <strong>" +
         capped +
-        "</strong>. Walk, discovery, and community actions count toward the weekly pool.</p>" +
+        "</strong>. Balances and conversion live in your Wallet.</p>" +
         simHtml +
-        '<p class="move-status-note">Shop Credit is for eazpire products only — not withdrawable as cash.</p>' +
         '<button type="button" class="btn primary sm" id="moveSyncStepsBtn">Sync 1k steps</button>' +
+        '<button type="button" class="btn ghost sm" data-go="wallet">Open Wallet</button>' +
         "</div>";
 
       var syncBtn = qs("moveSyncStepsBtn");
@@ -241,14 +173,13 @@
         syncBtn.addEventListener("click", async function () {
           var r = await global.CommunityApi.moveToEarnSyncSteps(1000);
           if (r.ok) {
-            alert("Steps synced. Activity score updated.");
+            alert("Steps synced. Check Wallet for updated balances.");
           } else {
             alert(r.error || "Sync failed");
           }
           renderUserStatus();
         });
       }
-      await renderMoveToEarnWallet(st, wrap);
     } catch (e) {
       wrap.innerHTML = '<p class="move-status-loading">Could not load status.</p>';
     }

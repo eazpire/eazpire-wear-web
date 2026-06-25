@@ -7,7 +7,7 @@
   <title>Eazpire Wear</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/community.css?v=36">
+  <link rel="stylesheet" href="/css/community.css?v=37">
   <link rel="stylesheet" href="/css/discovery.css?v=1">
 </head>
 <body class="is-boot-loading" data-role="guest">
@@ -30,7 +30,7 @@
     <nav class="rail-nav">
       <button type="button" class="rail-btn active" data-go="home"><span class="ico">🎮</span>Hub</button>
       <button type="button" class="rail-btn" data-go="feed"><span class="ico">🔥</span>Feed</button>
-      <button type="button" class="rail-btn" data-go="verify"><span class="ico">✓</span>Verify</button>
+      <button type="button" class="rail-btn" data-go="wallet"><span class="ico">💰</span>Wallet</button>
       <button type="button" class="rail-btn" data-go="community"><span class="ico">🤝</span>Squad</button>
       <button type="button" class="rail-btn" data-go="vault"><span class="ico">💎</span>Vault</button>
       <button type="button" class="rail-btn" data-go="move"><span class="ico">👟</span>Move</button>
@@ -82,7 +82,7 @@
           <div class="hero-copy">
             <span class="pill">🔥 Daily Quest</span>
             <h2>Wear it. Prove it. Level it.</h2>
-            <p>Scan QR, verify posts, upload ownership proof — turn real products into living Artifacts.</p>
+            <p>Scan QR, share proof, upload ownership — turn real products into living Artifacts.</p>
             <div class="hero-actions owner-only">
               <button type="button" class="btn primary" id="startQuest">Wear &amp; Earn</button>
             </div>
@@ -97,7 +97,7 @@
           <p id="questHint">Complete proof for Activity EAZ until midnight.</p>
           <div class="quest-list">
             <div class="quest"><div class="quest-ico">1</div><div><strong>Scan QR</strong><span>Confirm product</span></div><span class="badge orange">Soon</span></div>
-            <div class="quest"><div class="quest-ico">2</div><div><strong>Vote</strong><span>Guard the network</span></div><span class="badge">Open</span></div>
+            <div class="quest"><div class="quest-ico">2</div><div><strong>Share</strong><span>Post to the feed</span></div><span class="badge">Open</span></div>
             <div class="quest"><div class="quest-ico">3</div><div><strong>Upload proof</strong><span>Face optional</span></div><span class="badge">Next</span></div>
             <button type="button" class="btn ghost sm" id="wearEarnDailyBtn" style="margin-top:8px">Claim daily Free EAZ</button>
           </div>
@@ -137,25 +137,56 @@
       </div>
     </section>
 
-    <section class="screen" data-page="verify">
-      <div class="guest-only panel" style="padding:32px;text-align:center">
-        <div style="font-size:48px;margin-bottom:12px">🔐</div>
-        <h3 style="margin-bottom:8px">Sign in required</h3>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Own an Artifact to verify community items.</p>
-        <button type="button" class="btn primary" data-login>Sign in</button>
-      </div>
-      <div class="verify-grid owner-only">
-        <aside class="panel quest-panel">
-          <h3 style="text-align:left;margin-bottom:10px">Queues</h3>
-          <button type="button" class="queue-btn active" data-queue="design">Designs</button>
-          <button type="button" class="queue-btn" data-queue="product">Products</button>
-          <button type="button" class="queue-btn" data-queue="owner">Ownership</button>
-        </aside>
-        <article class="panel verify-card">
-          <div class="verify-body" id="verifyCardBody">
-            <div class="verify-empty"><div class="big">✓</div><p>Loading verify queue…</p></div>
+    <section class="screen" data-page="wallet">
+      <div class="wallet-page">
+        <div class="wallet-hero panel">
+          <div class="wallet-hero-glow" aria-hidden="true"></div>
+          <div class="wallet-hero-inner">
+            <span class="pill wallet-pill">Your balances</span>
+            <h2 class="wallet-hero-title">EAZ Wallet</h2>
+            <p class="wallet-hero-lead">Activity EAZ, Move earnings, and Shop Credit conversion — everything you collected in one clear overview.</p>
           </div>
-        </article>
+        </div>
+
+        <div class="guest-only panel wallet-guest-cta" id="walletGuestCta" style="padding:32px;text-align:center">
+          <div style="font-size:48px;margin-bottom:12px">💰</div>
+          <h3 style="margin-bottom:8px">Sign in to open your wallet</h3>
+          <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Track Free EAZ, Move earnings, and convert to Shop Credit.</p>
+          <button type="button" class="btn primary" data-login>Sign in</button>
+        </div>
+
+        <div id="walletOwnerContent" class="owner-only wallet-owner-content">
+          <div class="wallet-grid">
+            <article class="panel wallet-card wallet-card--activity">
+              <div class="wallet-card-top">
+                <span class="wallet-card-ico" aria-hidden="true">⚡</span>
+                <span class="wallet-card-label">Activity EAZ</span>
+              </div>
+              <strong class="wallet-card-value" id="walletActivityEaz">— EAZ</strong>
+              <p class="wallet-card-hint">Free EAZ from Wear &amp; Earn, referrals, and community actions.</p>
+            </article>
+            <article class="panel wallet-card wallet-card--today">
+              <div class="wallet-card-top">
+                <span class="wallet-card-ico" aria-hidden="true">👟</span>
+                <span class="wallet-card-label">Move today</span>
+              </div>
+              <strong class="wallet-card-value wallet-card-value--cyan" id="walletM2eToday">— EAZ</strong>
+              <p class="wallet-card-hint" id="walletM2eTodayCap">Earned today from steps</p>
+            </article>
+            <article class="panel wallet-card wallet-card--total">
+              <div class="wallet-card-top">
+                <span class="wallet-card-ico" aria-hidden="true">💎</span>
+                <span class="wallet-card-label">Move to Earn total</span>
+              </div>
+              <strong class="wallet-card-value wallet-card-value--gold" id="walletM2eTotal">— EAZC</strong>
+              <p class="wallet-card-hint" id="walletM2eLockedNote">Move earnings from walking with your Character</p>
+            </article>
+          </div>
+
+          <div class="panel wallet-convert-panel" id="walletConvertPanel">
+            <p class="wallet-status-loading">Loading conversion options…</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -411,7 +442,7 @@
 <nav class="bottom-nav" aria-label="Mobile nav">
   <button type="button" class="active" data-go="home"><span class="ico">🎮</span>Hub</button>
   <button type="button" data-go="feed"><span class="ico">🔥</span>Feed</button>
-  <button type="button" data-go="verify"><span class="ico">✓</span>Verify</button>
+  <button type="button" data-go="wallet"><span class="ico">💰</span>Wallet</button>
   <button type="button" data-go="community"><span class="ico">🤝</span>Squad</button>
   <button type="button" data-go="vault"><span class="ico">💎</span>Vault</button>
   <button type="button" data-go="move"><span class="ico">👟</span>Move</button>
@@ -597,11 +628,11 @@
 <script src="/js/feed-camera.js?v=3"></script>
 <script src="/js/feed-product-modal.js?v=10"></script>
 <script src="/js/feed.js?v=21"></script>
-<script src="/js/verify-hub.js?v=2"></script>
+<script src="/js/wallet.js?v=1"></script>
 <script src="/js/profile-modal.js?v=10"></script>
 <script src="/js/wear-android-download.js?v=1"></script>
 <script src="/js/wear-boot-loader.js?v=1"></script>
 <script src="/js/wear-asset-overrides.js?v=2"></script>
-<script src="/js/app.js?v=12"></script>
+<script src="/js/app.js?v=13"></script>
 </body>
 </html>

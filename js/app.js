@@ -7,7 +7,7 @@
   var titles = {
     home: "Game Hub",
     feed: "Live Artifact Feed",
-    verify: "Verification Arena",
+    wallet: "EAZ Wallet",
     community: "Your Squad",
     vault: "Artifact Vault",
     move: "Move to Earn",
@@ -51,8 +51,8 @@
     if (name === "feed" && global.CommunityFeed) {
       global.CommunityFeed.refresh();
     }
-    if (name === "verify" && global.CommunityVerifyHub) {
-      global.CommunityVerifyHub.refresh();
+    if (name === "wallet" && global.CommunityWallet) {
+      global.CommunityWallet.refresh();
     }
   }
 
@@ -180,6 +180,7 @@
       await global.CommunityWearEarn.refresh();
     }
     if (global.CommunityMoveToEarn) await global.CommunityMoveToEarn.refresh();
+    if (global.CommunityWallet) await global.CommunityWallet.refresh();
     if (global.CommunityFeed) await global.CommunityFeed.refresh();
     if (global.CommunityCharacterCraft) global.CommunityCharacterCraft.refresh();
     global.CommunityProfile.invalidate();
@@ -271,7 +272,6 @@
     bindQuestModal();
     if (global.CommunityWearEarn) global.CommunityWearEarn.bind();
     if (global.CommunityCharacterCraft) global.CommunityCharacterCraft.bind();
-    if (global.CommunityVerifyHub) global.CommunityVerifyHub.bind();
     if (global.CommunityFeed) global.CommunityFeed.bind();
 
     if (global.CommunityAuth.init) await global.CommunityAuth.init();
