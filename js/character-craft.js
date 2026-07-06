@@ -159,7 +159,7 @@
       !confirm(
         "Swap to " +
           (pick.product_title || pick.serial) +
-          "? EAZ will be charged and a re-render quest starts."
+          "? EAZC will be charged and a re-render quest starts."
       )
     ) {
       return;

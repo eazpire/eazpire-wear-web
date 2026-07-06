@@ -156,15 +156,15 @@
     try {
       var bal = await global.CommunityApi.balance(ownerId);
       var free = Number(bal.balance_free || bal.balance_total || bal.balance_eaz || 0) || 0;
-      setText("walletActivityEaz", formatEaz(free) + " EAZ");
+      setText("walletActivityEaz", formatEaz(free) + " EAZC");
     } catch (_) {
-      setText("walletActivityEaz", "— EAZ");
+      setText("walletActivityEaz", "— EAZC");
     }
 
     try {
       st = await global.CommunityApi.moveToEarnStatus();
       if (st.ok) {
-        setText("walletM2eToday", formatEaz(st.eaz_earned_today || 0) + " EAZ");
+        setText("walletM2eToday", formatEaz(st.eaz_earned_today || 0) + " EAZC");
         var cap = st.daily_cap_eaz ? " / " + formatEaz(st.daily_cap_eaz) : "";
         setText("walletM2eTodayCap", cap ? "Daily cap" + cap : "Earned today from steps");
         var wallet = st.move_to_earn_wallet;

@@ -21,7 +21,7 @@
   async function refreshWearEarn() {
     if (!global.CommunityAuth.isLoggedIn()) {
       setQuestPct("—");
-      setQuestHint("Sign in for Wear & Earn activity EAZ.");
+      setQuestHint("Sign in for Wear & Earn activity EAZC.");
       return;
     }
     try {
@@ -29,13 +29,13 @@
       if (status.ok) {
         setQuestPct(String(status.remaining_claims != null ? status.remaining_claims : "—"));
         setQuestHint(
-          "Free EAZ today: " +
+          "Free EAZC today: " +
             (status.claims_today || 0) +
             "/" +
             (status.daily_cap || 0) +
             " · +" +
             (status.reward_eaz || 0) +
-            " EAZ per action"
+            " EAZC per action"
         );
       }
     } catch (e) {}
@@ -51,7 +51,7 @@
       if (res.ok) {
         global.CommunityAuth.refreshSession();
         if (typeof global.CommunityHubRefresh === "function") global.CommunityHubRefresh();
-        alert("+" + res.eaz_credited + " Free EAZ credited.");
+        alert("+" + res.eaz_credited + " Free EAZC credited.");
       } else if (res.error === "already_claimed") {
         alert("Already claimed for this action today.");
       } else if (res.error === "daily_cap_reached") {

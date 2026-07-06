@@ -246,7 +246,7 @@
       post.can_claim_wear_earn
         ? '<button type="button" class="btn primary sm feed-claim-eaz" data-claim-eaz="' +
           post.id +
-          '">Claim Free EAZ</button>'
+          '">Claim Free EAZC</button>'
         : "";
 
     return (
@@ -583,7 +583,7 @@
     try {
       var res = await global.CommunityApi.wearEarnClaim("proof_upload", postId);
       if (res.ok) {
-        alert("+" + res.eaz_credited + " Free EAZ credited.");
+        alert("+" + res.eaz_credited + " Free EAZC credited.");
         if (global.CommunityAuth.refreshSession) global.CommunityAuth.refreshSession();
         if (typeof global.CommunityHubRefresh === "function") global.CommunityHubRefresh();
         if (btn) btn.remove();

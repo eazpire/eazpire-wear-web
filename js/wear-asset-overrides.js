@@ -54,7 +54,7 @@
   }
 
   function loadOverrides() {
-    return fetch(MANIFEST_URL, { cache: "no-store", credentials: "omit" })
+    var manifestPromise = fetch(MANIFEST_URL, { cache: "no-store", credentials: "omit" })
       .then(function (res) {
         if (!res.ok) return null;
         return res.json();
@@ -66,6 +66,27 @@
       .catch(function () {
         return 0;
       });
+
+    var coinPromise = fetch(
+      "https://creator-engine.eazpire.workers.dev/apps/creator-dispatch?op=platform-asset-manifest&_t=" +
+        Date.now(),
+      { cache: "no-store", credentials: "omit" }
+    )
+      .then(function (res) {
+        return res.ok ? res.json() : null;
+      })
+      .then(function (data) {
+        var url = data && data.ok && data.assets && data.assets.eazc_coin_logo;
+        if (!url) return;
+        document.querySelectorAll('[data-eaz-coin="eazc"]').forEach(function (img) {
+          if (img && img.tagName === "IMG") img.src = url;
+        });
+      })
+      .catch(function () {});
+
+    return Promise.all([manifestPromise, coinPromise]).then(function (r) {
+      return r[0] || 0;
+    });
   }
 
   global.WearAssetOverrides = {

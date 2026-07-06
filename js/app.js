@@ -7,7 +7,7 @@
   var titles = {
     home: "Game Hub",
     feed: "Live Artifact Feed",
-    wallet: "EAZ Wallet",
+    wallet: "EAZC Wallet",
     community: "Your Squad",
     vault: "Artifact Vault",
     move: "Move to Earn",
@@ -153,20 +153,20 @@
   }
 
   async function loadActivityEaz(ownerId) {
-    var el = document.getElementById("energyVal");
+    var el = document.getElementById("energyValAmount") || document.getElementById("energyVal");
     if (!el) return;
     if (!ownerId) {
-      el.textContent = "— EAZ";
+      el.textContent = "— EAZC";
       return;
     }
     var bal = await global.CommunityApi.balance(ownerId);
     if (!bal.ok) {
-      el.textContent = "— EAZ";
+      el.textContent = "— EAZC";
       return;
     }
     var free =
       Number(bal.balance_free || bal.balance_total || bal.balance_eaz || 0) || 0;
-    el.textContent = Math.round(free * 100) / 100 + " EAZ";
+    el.textContent = Math.round(free * 100) / 100 + " EAZC";
   }
 
   async function refreshData() {
@@ -202,7 +202,7 @@
       { icon: "📦", text: "Choose an Artifact from your vault" },
       { icon: "📷", text: "Take a camera selfie wearing your product" },
       { icon: "✓", text: "Wait for 2 community verifications (3 votes)" },
-      { icon: "🎉", text: "Claim Free EAZ after approval" },
+      { icon: "🎉", text: "Claim Free EAZC after approval" },
     ];
     var modal = document.getElementById("modal");
 
