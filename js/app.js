@@ -153,20 +153,20 @@
   }
 
   async function loadActivityEaz(ownerId) {
-    var el = document.getElementById("energyValAmount") || document.getElementById("energyVal");
+    var el = document.getElementById("energyValAmount");
     if (!el) return;
     if (!ownerId) {
-      el.textContent = "— EAZC";
+      el.textContent = "—";
       return;
     }
     var bal = await global.CommunityApi.balance(ownerId);
     if (!bal.ok) {
-      el.textContent = "— EAZC";
+      el.textContent = "—";
       return;
     }
     var free =
       Number(bal.balance_free || bal.balance_total || bal.balance_eaz || 0) || 0;
-    el.textContent = Math.round(free * 100) / 100 + " EAZC";
+    el.textContent = String(Math.round(free * 100) / 100);
   }
 
   async function refreshData() {

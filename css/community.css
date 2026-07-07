@@ -101,7 +101,7 @@
 
     .app-shell{
       min-height:100vh;display:grid;
-      grid-template-columns:92px minmax(0,1fr);
+      grid-template-columns:104px minmax(0,1fr);
       width:100%;
     }
     .side-rail{
@@ -118,7 +118,7 @@
     }
     .mark::after{display:none}
     .mark img{
-      width:min(78px,100%);height:auto;object-fit:contain;object-position:center;display:block;
+      width:min(96px,100%);height:auto;object-fit:contain;object-position:center;display:block;
       background:transparent;
       filter:drop-shadow(0 0 12px rgba(255,122,26,.28));
       animation:wearMarkPulse 2.4s ease-in-out infinite;
@@ -164,10 +164,11 @@
       margin:5px 0 0;font-size:24px;line-height:1;letter-spacing:-.045em;
     }
     .hud-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
-    .wear-android-download-wrap{margin-left:auto}
+    .hud-actions--top{margin-left:auto}
     .wear-android-download{
       display:inline-flex;align-items:center;gap:10px;
-      padding:7px 12px 7px 8px;border-radius:14px;
+      padding:7px 12px 7px 8px;border-radius:14px;box-sizing:border-box;
+      min-height:50px;
       border:1px solid rgba(61,220,132,.35);
       background:linear-gradient(135deg,rgba(61,220,132,.14),rgba(255,122,26,.1));
       color:var(--text);text-decoration:none;font-weight:800;font-size:11px;
@@ -197,6 +198,27 @@
     }
     .wear-android-download__android-badge svg{width:11px;height:11px;display:block}
     .wear-android-download__label{line-height:1.1}
+    .wear-activity-eazc{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:7px 12px 7px 8px;border-radius:14px;box-sizing:border-box;
+      min-height:50px;
+      border:1px solid rgba(255,122,26,.35);
+      background:linear-gradient(135deg,rgba(255,122,26,.14),rgba(255,255,255,.06));
+      box-shadow:0 8px 24px rgba(0,0,0,.22);
+    }
+    .wear-activity-eazc__coin{
+      width:36px;height:36px;flex-shrink:0;display:block;object-fit:contain;
+    }
+    .wear-activity-eazc__text{
+      display:flex;flex-direction:column;justify-content:center;gap:1px;
+      min-width:0;line-height:1.1;
+    }
+    .wear-activity-eazc__amount{
+      font-size:14px;font-weight:800;letter-spacing:-.03em;color:#ffd0aa;
+    }
+    .wear-activity-eazc__label{
+      font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);
+    }
     .wallet{
       min-width:128px;padding:10px 12px;border-radius:18px;
       border:1px solid var(--stroke);background:rgba(255,255,255,.07);
@@ -207,7 +229,6 @@
       text-transform:uppercase;letter-spacing:.1em;
     }
     .wallet strong{display:block;margin-top:4px;font-size:16px;letter-spacing:-.03em}
-    .wallet.activity strong{color:#ffd0aa}
 
     .screen{display:none;animation:fade .2s ease}
     .screen.active{display:block}
@@ -574,8 +595,12 @@
       .title-block h1{font-size:19px}
       .title-block .kicker{font-size:9px}
       .hud-actions{gap:6px}
-      .wear-android-download{padding:6px 10px 6px 7px;gap:8px;font-size:10px}
+      .wear-android-download{padding:6px 10px 6px 7px;gap:8px;font-size:10px;min-height:44px}
       .wear-android-download__logo-wrap,.wear-android-download__app-logo{width:32px;height:32px}
+      .wear-activity-eazc{padding:6px 10px 6px 7px;gap:8px;min-height:44px}
+      .wear-activity-eazc__coin{width:32px;height:32px}
+      .wear-activity-eazc__amount{font-size:13px}
+      .wear-activity-eazc__label{font-size:9px}
       .wallet{min-width:auto;padding:8px 9px;border-radius:15px}
       .wallet span{display:none}
       .avatar{display:none}

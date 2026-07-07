@@ -7,7 +7,7 @@
   <title>Eazpire Wear</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/community.css?v=37">
+  <link rel="stylesheet" href="/css/community.css?v=38">
   <link rel="stylesheet" href="/css/discovery.css?v=1">
 </head>
 <body class="is-boot-loading" data-role="guest">
@@ -47,7 +47,7 @@
         <div class="kicker">wear.eazpire.com · Wear · Move · Earn</div>
         <h1 id="screenTitle">Eazpire Game Hub</h1>
       </div>
-      <div class="hud-actions wear-android-download-wrap">
+      <div class="hud-actions hud-actions--top">
         <a
           class="wear-android-download"
           id="wearAndroidDownload"
@@ -66,15 +66,14 @@
           </span>
           <span class="wear-android-download__label">Download Now</span>
         </a>
-      </div>
-      <div class="hud-actions owner-only">
-        <div class="wallet activity">
-          <span>Activity EAZC</span>
-          <strong id="energyVal"><img class="wear-hud-coin" src="https://pub-2ffb11d4a361463498b9a842a87a870c.r2.dev/brand/coin/eazc-coin-logo.png" alt="" width="16" height="16" data-eaz-coin="eazc" loading="lazy"><span id="energyValAmount">— EAZC</span></strong>
+        <div class="wear-activity-eazc owner-only" aria-label="Activity EAZC balance">
+          <img class="wear-activity-eazc__coin wear-hud-coin" src="https://pub-2ffb11d4a361463498b9a842a87a870c.r2.dev/brand/coin/eazc-coin-logo.png" alt="" width="36" height="36" data-eaz-coin="eazc" loading="lazy">
+          <div class="wear-activity-eazc__text">
+            <strong class="wear-activity-eazc__amount" id="energyValAmount">—</strong>
+            <span class="wear-activity-eazc__label">EAZC</span>
+          </div>
         </div>
-      </div>
-      <div class="hud-actions guest-only">
-        <button type="button" class="btn primary sm" data-login>Login</button>
+        <button type="button" class="btn primary sm guest-only" data-login>Login</button>
       </div>
     </header>
 
